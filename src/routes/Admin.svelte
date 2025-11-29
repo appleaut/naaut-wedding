@@ -180,6 +180,7 @@
     });
 
     let activeTab = "config"; // config, rsvp, guestbook, change-password, gallery
+    let drawerOpen = false;
 
     let newPassword = "";
     let confirmNewPassword = "";
@@ -191,6 +192,7 @@
                 newPassword = "";
                 confirmNewPassword = "";
             }
+            drawerOpen = false;
         });
     }
 
@@ -554,7 +556,12 @@
 <svelte:window on:beforeunload={handleBeforeUnload} />
 
 <div class="drawer lg:drawer-open" data-theme="valentine">
-    <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+    <input
+        id="my-drawer-2"
+        type="checkbox"
+        class="drawer-toggle"
+        bind:checked={drawerOpen}
+    />
     <div class="drawer-content flex flex-col p-4">
         <!-- Page content here -->
         <div class="navbar bg-base-100 mb-4 shadow rounded-box">
@@ -783,90 +790,6 @@
                                 </div>
                             </div>
                         {/if}
-
-                        <div class="divider">
-                            {translations[$language].dress_code}
-                        </div>
-                        {#if $config.dressCodeColors}
-                            <div class="form-control md:col-span-2">
-                                <div class="label">
-                                    <span class="label-text"
-                                        >{translations[$language]
-                                            .dress_code_colors}</span
-                                    >
-                                </div>
-                                <div
-                                    class="grid grid-cols-1 sm:grid-cols-3 gap-4"
-                                >
-                                    {#each $config.dressCodeColors as _, i}
-                                        <div class="form-control">
-                                            <div class="flex gap-2">
-                                                <input
-                                                    type="color"
-                                                    class="input input-bordered p-0 w-10 h-10 shrink-0 cursor-pointer rounded-full overflow-hidden [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded-full [&::-moz-color-swatch]:border-none [&::-moz-color-swatch]:rounded-full"
-                                                    bind:value={
-                                                        $config.dressCodeColors[
-                                                            i
-                                                        ]
-                                                    }
-                                                    aria-label="Dress code color picker"
-                                                />
-                                                <input
-                                                    type="text"
-                                                    class="input input-bordered w-full text-sm px-2 min-w-0"
-                                                    bind:value={
-                                                        $config.dressCodeColors[
-                                                            i
-                                                        ]
-                                                    }
-                                                    placeholder="#ffffff"
-                                                    aria-label="Dress code color hex code"
-                                                />
-                                                <button
-                                                    class="btn btn-square btn-ghost btn-sm text-error"
-                                                    on:click={() =>
-                                                        removeDressCodeColor(i)}
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-5 w-5"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        stroke="currentColor"
-                                                        ><path
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M6 18L18 6M6 6l12 12"
-                                                        /></svg
-                                                    >
-                                                </button>
-                                            </div>
-                                        </div>
-                                    {/each}
-                                    {#if $config.dressCodeColors.length < 3}
-                                        <button
-                                            class="btn btn-outline btn-sm h-10 border-dashed"
-                                            on:click={addDressCodeColor}
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                class="h-5 w-5"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                                ><path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M12 4v16m8-8H4"
-                                                /></svg
-                                            >
-                                        </button>
-                                    {/if}
-                                </div>
-                            </div>
-                        {/if}
                         <div class="form-control">
                             <div class="label">
                                 <span class="label-text">
@@ -893,6 +816,84 @@
                             ></textarea>
                         </div>
                     </div>
+
+                    <div class="divider">
+                        {translations[$language].dress_code}
+                    </div>
+                    {#if $config.dressCodeColors}
+                        <div class="form-control md:col-span-2">
+                            <div class="label">
+                                <span class="label-text"
+                                    >{translations[$language]
+                                        .dress_code_colors}</span
+                                >
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                {#each $config.dressCodeColors as _, i}
+                                    <div class="form-control">
+                                        <div class="flex gap-2">
+                                            <input
+                                                type="color"
+                                                class="input input-bordered p-0 w-10 h-10 shrink-0 cursor-pointer rounded-full overflow-hidden [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded-full [&::-moz-color-swatch]:border-none [&::-moz-color-swatch]:rounded-full"
+                                                bind:value={
+                                                    $config.dressCodeColors[i]
+                                                }
+                                                aria-label="Dress code color picker"
+                                            />
+                                            <input
+                                                type="text"
+                                                class="input input-bordered w-full text-sm px-2 min-w-0"
+                                                bind:value={
+                                                    $config.dressCodeColors[i]
+                                                }
+                                                placeholder="#ffffff"
+                                                aria-label="Dress code color hex code"
+                                            />
+                                            <button
+                                                class="btn btn-square btn-ghost btn-sm text-error"
+                                                on:click={() =>
+                                                    removeDressCodeColor(i)}
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-5 w-5"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    ><path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M6 18L18 6M6 6l12 12"
+                                                    /></svg
+                                                >
+                                            </button>
+                                        </div>
+                                    </div>
+                                {/each}
+                                {#if $config.dressCodeColors.length < 3}
+                                    <button
+                                        class="btn btn-outline btn-sm h-10 border-dashed"
+                                        on:click={addDressCodeColor}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="h-5 w-5"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            ><path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M12 4v16m8-8H4"
+                                            /></svg
+                                        >
+                                    </button>
+                                {/if}
+                            </div>
+                        </div>
+                    {/if}
 
                     <div class="divider">
                         {translations[$language].qr_code_settings}
@@ -1547,7 +1548,10 @@
                 >
             </li> -->
             <li>
-                <a href="/" target="_blank"
+                <a
+                    href="/"
+                    target="_blank"
+                    on:click={() => (drawerOpen = false)}
                     >{translations[$language].view_site}</a
                 >
             </li>
