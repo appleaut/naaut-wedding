@@ -16,6 +16,7 @@
   onMount(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
+        localStorage.removeItem("adminActiveTab");
         push("/admin");
       }
     });
@@ -27,6 +28,7 @@
     error = "";
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      localStorage.removeItem("adminActiveTab");
       push("/admin");
     } catch (e: any) {
       error = e.message;

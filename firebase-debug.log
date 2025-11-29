@@ -1,0 +1,16 @@
+[debug] [2025-11-29T13:15:00.674Z] ----------------------------------------------------------------------
+[debug] [2025-11-29T13:15:00.677Z] Command:       C:\Program Files\nodejs\node.exe D:\Projects\napawan\wedding\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2025-11-29T13:15:00.677Z] CLI Version:   14.26.0
+[debug] [2025-11-29T13:15:00.677Z] Platform:      win32
+[debug] [2025-11-29T13:15:00.677Z] Node Version:  v22.13.1
+[debug] [2025-11-29T13:15:00.677Z] Time:          Sat Nov 29 2025 20:15:00 GMT+0700 (เวลาอินโดจีน)
+[debug] [2025-11-29T13:15:00.678Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-11-29T13:15:00.867Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-11-29T13:15:00.867Z] > authorizing via signed-in user (appleaut@gmail.com)
+[debug] [2025-11-29T13:15:00.868Z] [iam] checking project napawan-wedding for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2025-11-29T13:15:00.869Z] Checked if tokens are valid: true, expires at: 1764423644613
+[debug] [2025-11-29T13:15:00.869Z] Checked if tokens are valid: true, expires at: 1764423644613
+[debug] [2025-11-29T13:15:00.869Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/napawan-wedding:testIamPermissions [none]
+[debug] [2025-11-29T13:15:00.869Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/napawan-wedding:testIamPermissions x-goog-quota-user=projects/napawan-wedding
+[debug] [2025-11-29T13:15:00.870Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/napawan-wedding:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
