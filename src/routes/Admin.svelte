@@ -136,10 +136,14 @@
                 configToSave.qrCodeEndTime = toISO(configToSave.qrCodeEndTime);
 
             await setDoc(doc(db, "config", "main"), configToSave);
-            alert(translations[$language].config_saved);
+            modalMessage = translations[$language].config_saved;
+            modalType = "success";
+            showModal = true;
         } catch (e: any) {
             console.error("Error saving config:", e);
-            alert(`${translations[$language].config_save_error} ${e.message}`);
+            modalMessage = `${translations[$language].config_save_error} ${e.message}`;
+            modalType = "error";
+            showModal = true;
         }
     }
 
@@ -157,13 +161,23 @@
     async function testConnection() {
         try {
             const querySnapshot = await getDocs(collection(db, "config"));
-            alert(
-                `${translations[$language].connection_success} ${querySnapshot.size}`,
-            );
+            modalMessage = `${translations[$language].connection_success} ${querySnapshot.size}`;
+            modalType = "success";
+            showModal = true;
         } catch (e: any) {
             console.error("Connection failed", e);
-            alert(`${translations[$language].connection_failed} ${e.message}`);
+            modalMessage = `${translations[$language].connection_failed} ${e.message}`;
+            modalType = "error";
+            showModal = true;
         }
+    }
+
+    let showModal = false;
+    let modalMessage = "";
+    let modalType = "success";
+
+    function closeModal() {
+        showModal = false;
     }
 </script>
 
@@ -702,3 +716,28 @@
         </ul>
     </div>
 </div>
+
+{#if showModal}
+    <dialog class="modal modal-open">
+        <div class="modal-box">
+            <h3
+                class="font-bold text-lg"
+                class:text-success={modalType === "success"}
+                class:text-error={modalType === "error"}
+            >
+                {modalType === "success"
+                    ? translations[$language].success
+                    : translations[$language].error}
+            </h3>
+            <p class="py-4">{modalMessage}</p>
+            <div class="modal-action">
+                <button class="btn" on:click={closeModal}
+                    >{translations[$language].close}</button
+                >
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button on:click={closeModal}>close</button>
+        </form>
+    </dialog>
+{/if}
