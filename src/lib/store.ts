@@ -31,6 +31,7 @@ export interface WeddingConfig {
     };
     schedule: { time: string; title: string }[];
     sectionOrder: string[];
+    dressCodeColors: string[];
 }
 
 const defaultConfig: WeddingConfig = {
@@ -72,7 +73,8 @@ const defaultConfig: WeddingConfig = {
         "QRCode",
         "RSVP",
         "Guestbook"
-    ]
+    ],
+    dressCodeColors: ["#ffffff", "#ffffff", "#ffffff"]
 };
 
 export const config = writable<WeddingConfig>(defaultConfig);

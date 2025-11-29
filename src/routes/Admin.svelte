@@ -122,6 +122,13 @@
                     data.customColors.push("#000000");
                 }
 
+                if (
+                    !data.dressCodeColors ||
+                    !Array.isArray(data.dressCodeColors)
+                ) {
+                    data.dressCodeColors = ["#ffffff"];
+                }
+
                 config.set(data as any);
                 originalConfig = JSON.stringify(data);
             }
@@ -419,6 +426,19 @@
         $config.schedule = $config.schedule.filter((_, i) => i !== index);
     }
 
+    function addDressCodeColor() {
+        if (!$config.dressCodeColors) $config.dressCodeColors = [];
+        if ($config.dressCodeColors.length < 3) {
+            $config.dressCodeColors = [...$config.dressCodeColors, "#ffffff"];
+        }
+    }
+
+    function removeDressCodeColor(index: number) {
+        $config.dressCodeColors = $config.dressCodeColors.filter(
+            (_, i) => i !== index,
+        );
+    }
+
     const sectionConfigMap: Record<
         string,
         | "showCountdown"
@@ -670,6 +690,88 @@
                                 <div class="text-xs text-base-content/60 mt-2">
                                     Enter Hex codes (e.g. #0C143B) or use the
                                     color picker.
+                                </div>
+                            </div>
+                        {/if}
+
+                        <div class="divider">
+                            {translations[$language].dress_code}
+                        </div>
+                        {#if $config.dressCodeColors}
+                            <div class="form-control md:col-span-2">
+                                <label class="label">
+                                    <span class="label-text"
+                                        >{translations[$language]
+                                            .dress_code_colors}</span
+                                    >
+                                </label>
+                                <div
+                                    class="grid grid-cols-1 sm:grid-cols-3 gap-4"
+                                >
+                                    {#each $config.dressCodeColors as _, i}
+                                        <div class="form-control">
+                                            <div class="flex gap-2">
+                                                <input
+                                                    type="color"
+                                                    class="input input-bordered p-0 w-10 h-10 shrink-0 cursor-pointer rounded-full overflow-hidden [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded-full [&::-moz-color-swatch]:border-none [&::-moz-color-swatch]:rounded-full"
+                                                    bind:value={
+                                                        $config.dressCodeColors[
+                                                            i
+                                                        ]
+                                                    }
+                                                />
+                                                <input
+                                                    type="text"
+                                                    class="input input-bordered w-full text-sm px-2 min-w-0"
+                                                    bind:value={
+                                                        $config.dressCodeColors[
+                                                            i
+                                                        ]
+                                                    }
+                                                    placeholder="#ffffff"
+                                                />
+                                                <button
+                                                    class="btn btn-square btn-ghost btn-sm text-error"
+                                                    on:click={() =>
+                                                        removeDressCodeColor(i)}
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-5 w-5"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                        ><path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M6 18L18 6M6 6l12 12"
+                                                        /></svg
+                                                    >
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {/each}
+                                    {#if $config.dressCodeColors.length < 3}
+                                        <button
+                                            class="btn btn-outline btn-sm h-10 border-dashed"
+                                            on:click={addDressCodeColor}
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                class="h-5 w-5"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                                ><path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M12 4v16m8-8H4"
+                                                /></svg
+                                            >
+                                        </button>
+                                    {/if}
                                 </div>
                             </div>
                         {/if}
@@ -1234,6 +1336,11 @@
         {/if}
     </div>
     <div class="drawer-side">
+        <label
+            for="my-drawer-2"
+            aria-label="close sidebar"
+            class="drawer-overlay"
+        ></label>
         <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
             <!-- Sidebar content here -->
             <li class="mb-4 text-xl font-bold px-4">

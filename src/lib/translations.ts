@@ -142,6 +142,8 @@ export const translations = {
         password_updated: "Password updated successfully",
         update_error: "Update failed",
         display_name: "Display Name",
+        dress_code: "Dress Code",
+        dress_code_colors: "Dress Code Colors",
     },
     th: {
         home: "หน้าแรก",
@@ -286,6 +288,8 @@ export const translations = {
         password_updated: "เปลี่ยนรหัสผ่านสำเร็จ",
         update_error: "อัปเดตล้มเหลว",
         display_name: "ชื่อที่แสดง",
+        dress_code: "การแต่งกาย",
+        dress_code_colors: "สีชุดที่แนะนำ",
     }
 
 };

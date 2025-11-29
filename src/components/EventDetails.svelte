@@ -8,7 +8,9 @@
 {#if $config.showEventDetails}
   <div class="hero bg-white py-20 text-wedding-dark font-sans">
     <div class="hero-content flex-col w-full max-w-4xl">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full text-center">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full text-center"
+      >
         <div class="flex flex-col items-center p-8 border border-wedding-beige">
           <div class="mb-4 text-wedding-green">
             <svg
@@ -106,6 +108,39 @@
           >
             {translations[$language].see_map}
           </a>
+        </div>
+
+        <div class="flex flex-col items-center p-8 border border-wedding-beige">
+          <div class="mb-4 text-wedding-green">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-8 h-8"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-xl font-serif mb-2">
+            {translations[$language].dress_code}
+          </h3>
+          <div class="flex gap-3 justify-center mt-2">
+            {#if $config.dressCodeColors}
+              {#each $config.dressCodeColors as color}
+                <div
+                  class="w-8 h-8 rounded-full border border-gray-200 shadow-sm"
+                  style="background-color: {color};"
+                  title={color}
+                ></div>
+              {/each}
+            {/if}
+          </div>
         </div>
       </div>
     </div>
