@@ -156,6 +156,18 @@
                             />
                         </div>
                         <div class="form-control">
+                            <label class="label" for="groomNickname"
+                                ><span class="label-text">Groom Nickname</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="groomNickname"
+                                bind:value={$config.groomNickname}
+                                class="input input-bordered"
+                            />
+                        </div>
+                        <div class="form-control">
                             <label class="label" for="brideName"
                                 ><span class="label-text">Bride Name</span
                                 ></label
@@ -164,6 +176,18 @@
                                 type="text"
                                 id="brideName"
                                 bind:value={$config.brideName}
+                                class="input input-bordered"
+                            />
+                        </div>
+                        <div class="form-control">
+                            <label class="label" for="brideNickname"
+                                ><span class="label-text">Bride Nickname</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="brideNickname"
+                                bind:value={$config.brideNickname}
                                 class="input input-bordered"
                             />
                         </div>
@@ -204,43 +228,233 @@
                                 <option value="garden">Garden</option>
                             </select>
                         </div>
+                        <div class="form-control">
+                            <label class="label" for="videoUrl"
+                                ><span class="label-text">Video URL</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="videoUrl"
+                                bind:value={$config.videoUrl}
+                                class="input input-bordered"
+                            />
+                        </div>
+                        <div class="form-control md:col-span-2">
+                            <label class="label" for="description"
+                                ><span class="label-text">Description</span
+                                ></label
+                            >
+                            <textarea
+                                id="description"
+                                bind:value={$config.description}
+                                class="textarea textarea-bordered h-24"
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="divider">QR Code Settings</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label class="label" for="qrCodeStartTime"
+                                ><span class="label-text"
+                                    >QR Code Start Time</span
+                                ></label
+                            >
+                            <input
+                                type="datetime-local"
+                                id="qrCodeStartTime"
+                                bind:value={$config.qrCodeStartTime}
+                                class="input input-bordered"
+                            />
+                        </div>
+                        <div class="form-control">
+                            <label class="label" for="qrCodeEndTime"
+                                ><span class="label-text">QR Code End Time</span
+                                ></label
+                            >
+                            <input
+                                type="datetime-local"
+                                id="qrCodeEndTime"
+                                bind:value={$config.qrCodeEndTime}
+                                class="input input-bordered"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="divider">Bank Account</div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="form-control">
+                            <label class="label" for="bankName"
+                                ><span class="label-text">Bank Name</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="bankName"
+                                bind:value={$config.bankAccount.bankName}
+                                class="input input-bordered"
+                            />
+                        </div>
+                        <div class="form-control">
+                            <label class="label" for="accountName"
+                                ><span class="label-text">Account Name</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="accountName"
+                                bind:value={$config.bankAccount.accountName}
+                                class="input input-bordered"
+                            />
+                        </div>
+                        <div class="form-control">
+                            <label class="label" for="accountNumber"
+                                ><span class="label-text">Account Number</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="accountNumber"
+                                bind:value={$config.bankAccount.accountNumber}
+                                class="input input-bordered"
+                            />
+                        </div>
                     </div>
 
                     <div class="divider">Toggles</div>
 
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <label class="label cursor-pointer">
-                            <span class="label-text">Show Gallery</span>
-                            <input
-                                type="checkbox"
-                                bind:checked={$config.showGallery}
-                                class="toggle"
-                            />
-                        </label>
-                        <label class="label cursor-pointer">
-                            <span class="label-text">Show RSVP</span>
-                            <input
-                                type="checkbox"
-                                bind:checked={$config.showRSVP}
-                                class="toggle"
-                            />
-                        </label>
-                        <label class="label cursor-pointer">
-                            <span class="label-text">Show Map</span>
-                            <input
-                                type="checkbox"
-                                bind:checked={$config.showMap}
-                                class="toggle"
-                            />
-                        </label>
-                        <label class="label cursor-pointer">
-                            <span class="label-text">Show Video</span>
-                            <input
-                                type="checkbox"
-                                bind:checked={$config.showVideo}
-                                class="toggle"
-                            />
-                        </label>
+                    <div
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+                    >
+                        <div
+                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
+                        >
+                            <label
+                                class="label cursor-pointer justify-start gap-4"
+                            >
+                                <span class="label-text font-medium"
+                                    >Show Gallery</span
+                                >
+                                <input
+                                    type="checkbox"
+                                    bind:checked={$config.showGallery}
+                                    class="toggle toggle-primary"
+                                />
+                            </label>
+                        </div>
+                        <div
+                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
+                        >
+                            <label
+                                class="label cursor-pointer justify-start gap-4"
+                            >
+                                <span class="label-text font-medium"
+                                    >Show RSVP</span
+                                >
+                                <input
+                                    type="checkbox"
+                                    bind:checked={$config.showRSVP}
+                                    class="toggle toggle-primary"
+                                />
+                            </label>
+                        </div>
+                        <div
+                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
+                        >
+                            <label
+                                class="label cursor-pointer justify-start gap-4"
+                            >
+                                <span class="label-text font-medium"
+                                    >Show Map</span
+                                >
+                                <input
+                                    type="checkbox"
+                                    bind:checked={$config.showMap}
+                                    class="toggle toggle-primary"
+                                />
+                            </label>
+                        </div>
+                        <div
+                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
+                        >
+                            <label
+                                class="label cursor-pointer justify-start gap-4"
+                            >
+                                <span class="label-text font-medium"
+                                    >Show Video</span
+                                >
+                                <input
+                                    type="checkbox"
+                                    bind:checked={$config.showVideo}
+                                    class="toggle toggle-primary"
+                                />
+                            </label>
+                        </div>
+                        <div
+                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
+                        >
+                            <label
+                                class="label cursor-pointer justify-start gap-4"
+                            >
+                                <span class="label-text font-medium"
+                                    >Show Guestbook</span
+                                >
+                                <input
+                                    type="checkbox"
+                                    bind:checked={$config.showGuestbook}
+                                    class="toggle toggle-primary"
+                                />
+                            </label>
+                        </div>
+                        <div
+                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
+                        >
+                            <label
+                                class="label cursor-pointer justify-start gap-4"
+                            >
+                                <span class="label-text font-medium"
+                                    >Show Countdown</span
+                                >
+                                <input
+                                    type="checkbox"
+                                    bind:checked={$config.showCountdown}
+                                    class="toggle toggle-primary"
+                                />
+                            </label>
+                        </div>
+                        <div
+                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
+                        >
+                            <label
+                                class="label cursor-pointer justify-start gap-4"
+                            >
+                                <span class="label-text font-medium"
+                                    >Show Schedule</span
+                                >
+                                <input
+                                    type="checkbox"
+                                    bind:checked={$config.showSchedule}
+                                    class="toggle toggle-primary"
+                                />
+                            </label>
+                        </div>
+                        <div
+                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
+                        >
+                            <label
+                                class="label cursor-pointer justify-start gap-4"
+                            >
+                                <span class="label-text font-medium"
+                                    >Show QR Code</span
+                                >
+                                <input
+                                    type="checkbox"
+                                    bind:checked={$config.showQRCode}
+                                    class="toggle toggle-primary"
+                                />
+                            </label>
+                        </div>
                     </div>
 
                     <div class="card-actions justify-end mt-4">
