@@ -13,6 +13,13 @@
         query,
         orderBy,
     } from "firebase/firestore";
+    import {
+        ref,
+        uploadBytes,
+        getDownloadURL,
+        deleteObject,
+    } from "firebase/storage";
+    import { storage } from "../lib/firebase";
     import { onMount } from "svelte";
     import { onAuthStateChanged, signOut, updatePassword } from "firebase/auth";
     import flatpickr from "flatpickr";
@@ -172,7 +179,7 @@
         return unsubscribe;
     });
 
-    let activeTab = "config"; // config, rsvp, guestbook, change-password
+    let activeTab = "config"; // config, rsvp, guestbook, change-password, gallery
 
     let newPassword = "";
     let confirmNewPassword = "";
@@ -473,6 +480,75 @@
         RSVP: "showRSVP",
         Guestbook: "showGuestbook",
     };
+
+    let uploading = false;
+
+    async function uploadImage(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (!input.files || input.files.length === 0) return;
+
+        const file = input.files[0];
+        const storageRef = ref(
+            storage,
+            `image/gallery/${Date.now()}_${file.name}`,
+        );
+
+        uploading = true;
+        try {
+            const snapshot = await uploadBytes(storageRef, file);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+
+            if (!$config.galleryImages) $config.galleryImages = [];
+            $config.galleryImages = [...$config.galleryImages, downloadURL];
+
+            await saveConfig();
+            showToastNotification(translations[$language].upload_success);
+            input.value = ""; // Reset input
+        } catch (e) {
+            console.error("Upload failed:", e);
+            modalMessage = translations[$language].upload_error;
+            modalType = "error";
+            showModal = true;
+        } finally {
+            uploading = false;
+        }
+    }
+
+    async function deleteImage(url: string) {
+        if (!confirm(translations[$language].delete_image_confirm)) return;
+
+        try {
+            // Create a reference to the file to delete
+            const imageRef = ref(storage, url);
+
+            // Delete the file
+            await deleteObject(imageRef);
+
+            // Update config
+            $config.galleryImages = $config.galleryImages.filter(
+                (img) => img !== url,
+            );
+            await saveConfig();
+
+            showToastNotification(translations[$language].delete_image_success);
+        } catch (e) {
+            console.error("Delete failed:", e);
+            // If the file is not found in storage (e.g. already deleted), still remove from config
+            if ((e as any).code === "storage/object-not-found") {
+                $config.galleryImages = $config.galleryImages.filter(
+                    (img) => img !== url,
+                );
+                await saveConfig();
+                showToastNotification(
+                    translations[$language].delete_image_success,
+                );
+            } else {
+                modalMessage = translations[$language].delete_image_error;
+                modalType = "error";
+                showModal = true;
+            }
+        }
+    }
 </script>
 
 <svelte:window on:beforeunload={handleBeforeUnload} />
@@ -1214,6 +1290,71 @@
                     </div>
                 {/each}
             </div>
+        {:else if activeTab === "gallery"}
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        {translations[$language].gallery_management}
+                    </h2>
+
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label" for="gallery-upload">
+                            <span class="label-text"
+                                >{translations[$language].upload_image}</span
+                            >
+                        </label>
+                        <input
+                            type="file"
+                            id="gallery-upload"
+                            class="file-input file-input-bordered w-full max-w-xs"
+                            accept="image/*"
+                            on:change={uploadImage}
+                            disabled={uploading}
+                        />
+                        {#if uploading}
+                            <div class="text-sm text-info mt-2">
+                                {translations[$language].uploading}
+                            </div>
+                        {/if}
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div
+                        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                    >
+                        {#if $config.galleryImages}
+                            {#each $config.galleryImages as img}
+                                <div class="relative group aspect-square">
+                                    <img
+                                        src={img}
+                                        alt="Gallery"
+                                        class="w-full h-full object-cover rounded-lg shadow-md"
+                                    />
+                                    <button
+                                        class="btn btn-circle btn-error btn-sm absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        on:click={() => deleteImage(img)}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            ><path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"
+                                            /></svg
+                                        >
+                                    </button>
+                                </div>
+                            {/each}
+                        {/if}
+                    </div>
+                </div>
+            </div>
         {:else if activeTab === "change-password"}
             <div class="flex justify-center items-center min-h-[50vh]">
                 <div class="card bg-base-100 shadow-xl w-full max-w-md">
@@ -1381,6 +1522,13 @@
                     class:active={activeTab === "guestbook"}
                     on:click={() => switchTab("guestbook")}
                     >{translations[$language].guestbook}</button
+                >
+            </li>
+            <li>
+                <button
+                    class:active={activeTab === "gallery"}
+                    on:click={() => switchTab("gallery")}
+                    >{translations[$language].gallery_management}</button
                 >
             </li>
             <div class="divider"></div>

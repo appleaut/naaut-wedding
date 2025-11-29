@@ -145,6 +145,15 @@ export const translations = {
         dress_code: "Dress Code",
         dress_code_colors: "Dress Code Colors",
         refresh_success: "Data refreshed successfully",
+        upload_image: "Upload Image",
+        gallery_management: "Gallery Management",
+        view_all: "View All",
+        delete_image_confirm: "Are you sure you want to delete this image?",
+        uploading: "Uploading...",
+        upload_success: "Image uploaded successfully",
+        upload_error: "Image upload failed",
+        delete_image_success: "Image deleted successfully",
+        delete_image_error: "Image deletion failed",
     },
     th: {
         home: "หน้าแรก",
@@ -292,6 +301,15 @@ export const translations = {
         dress_code: "การแต่งกาย",
         dress_code_colors: "สีชุดที่แนะนำ",
         refresh_success: "รีเฟรชข้อมูลเรียบร้อยแล้ว",
+        upload_image: "อัปโหลดรูปภาพ",
+        gallery_management: "จัดการแกลเลอรี่",
+        view_all: "ดูทั้งหมด",
+        delete_image_confirm: "คุณแน่ใจหรือไม่ว่าต้องการลบรูปภาพนี้?",
+        uploading: "กำลังอัปโหลด...",
+        upload_success: "อัปโหลดรูปภาพสำเร็จ",
+        upload_error: "อัปโหลดรูปภาพล้มเหลว",
+        delete_image_success: "ลบรูปภาพสำเร็จ",
+        delete_image_error: "ลบรูปภาพล้มเหลว",
     }
 
 };
