@@ -119,9 +119,9 @@
 
     async function testConnection() {
         try {
-            const querySnapshot = await getDocs(collection(db, "rsvp"));
+            const querySnapshot = await getDocs(collection(db, "config"));
             alert(
-                `Connection Successful! Found ${querySnapshot.size} RSVP entries.`,
+                `Connection Successful! Found ${querySnapshot.size} config entries.`,
             );
         } catch (e: any) {
             console.error("Connection failed", e);
