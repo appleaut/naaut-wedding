@@ -1,13 +1,51 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
-    let playing = true;
+    let playing = false;
     let audio: HTMLAudioElement;
 
     onMount(() => {
-        audio.play().catch(() => {
-            playing = false;
-        });
+        const attemptPlay = async () => {
+            try {
+                await audio.play();
+                playing = true;
+            } catch (error) {
+                console.log("Autoplay waiting for interaction");
+                playing = false;
+                addInteractionListeners();
+            }
+        };
+
+        const onInteraction = () => {
+            attemptPlay();
+            removeInteractionListeners();
+        };
+
+        const addInteractionListeners = () => {
+            const options = { once: true, capture: true };
+            window.addEventListener("click", onInteraction, options);
+            window.addEventListener("keydown", onInteraction, options);
+            window.addEventListener("touchstart", onInteraction, options);
+            window.addEventListener("mousemove", onInteraction, options);
+        };
+
+        const removeInteractionListeners = () => {
+            const options = { capture: true };
+            window.removeEventListener("click", onInteraction, options);
+            window.removeEventListener("keydown", onInteraction, options);
+            window.removeEventListener("touchstart", onInteraction, options);
+            window.removeEventListener("mousemove", onInteraction, options);
+        };
+
+        if (audio.readyState >= 2) {
+            attemptPlay();
+        } else {
+            audio.addEventListener("canplay", attemptPlay, { once: true });
+        }
+
+        return () => {
+            removeInteractionListeners();
+        };
     });
     // Use a royalty free music or placeholder
     const musicUrl =
@@ -19,12 +57,20 @@
         } else {
             audio.play();
         }
-        playing = !playing;
     }
 </script>
 
 <div class="fixed bottom-4 right-4 z-50">
-    <audio bind:this={audio} src={musicUrl} loop></audio>
+    <audio
+        bind:this={audio}
+        src={musicUrl}
+        loop
+        preload="auto"
+        on:play={() => {
+            playing = true;
+        }}
+        on:pause={() => (playing = false)}
+    ></audio>
     <button class="btn btn-circle btn-primary shadow-lg" on:click={togglePlay}>
         {#if playing}
             <svg

@@ -609,7 +609,7 @@
                     >Test Firebase Connection</button
                 >
             </li>
-            <li><a href="/">View Site</a></li>
+            <li><a href="/" target="_blank">View Site</a></li>
         </ul>
     </div>
 </div>
