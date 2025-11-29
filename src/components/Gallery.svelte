@@ -20,26 +20,28 @@
 </script>
 
 {#if $config.showGallery}
-    <div class="py-10 bg-base-200">
+    <div class="py-20 bg-wedding-beige text-wedding-dark font-sans">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-8">
+            <h2 class="text-3xl md:text-4xl font-serif text-center mb-12">
                 {translations[$language].gallery}
             </h2>
 
             <div
-                class="carousel carousel-center rounded-box p-4 space-x-4 bg-neutral"
+                class="carousel carousel-center w-full p-4 space-x-4 bg-transparent"
             >
                 {#each images as img, i}
                     <div class="carousel-item">
                         <img
                             src={img}
                             alt="{translations[$language].gallery} {i}"
-                            class="rounded-box h-64 lg:h-96 object-cover"
+                            class="h-64 lg:h-96 object-cover shadow-md"
                         />
                     </div>
                 {/each}
             </div>
-            <p class="text-center mt-2 text-sm opacity-50">
+            <p
+                class="text-center mt-4 text-sm opacity-60 font-serif italic tracking-wider"
+            >
                 {translations[$language].swipe_to_see_more}
             </p>
         </div>
