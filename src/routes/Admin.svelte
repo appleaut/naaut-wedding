@@ -8,6 +8,9 @@
         doc,
         setDoc,
         getDoc,
+        deleteDoc,
+        query,
+        orderBy,
     } from "firebase/firestore";
     import { onMount } from "svelte";
     import { onAuthStateChanged } from "firebase/auth";
@@ -16,14 +19,7 @@
         $language = $language === "th" ? "en" : "th";
     }
 
-    onMount(async () => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                push("/login");
-            }
-        });
-
-        // Load config from firestore
+    async function fetchConfig() {
         try {
             const docRef = doc(db, "config", "main");
             const docSnap = await getDoc(docRef);
@@ -33,8 +29,25 @@
         } catch (e) {
             console.error("Error loading config:", e);
         }
+    }
 
-        fetchRSVPs();
+    async function refreshData() {
+        await fetchConfig();
+        await fetchRSVPs();
+        await fetchGuestbook();
+    }
+
+    onMount(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                push("/login");
+            }
+        });
+
+        fetchConfig().then(() => {
+            fetchRSVPs();
+            fetchGuestbook();
+        });
 
         return unsubscribe;
     });
@@ -55,15 +68,29 @@
         }
     }
 
-    // Mock Guestbook Data
-    let wishes = [
-        {
-            id: 1,
-            name: "Friend 1",
-            message: "Congrats!",
-            timestamp: new Date(),
-        },
-    ];
+    let wishes: any[] = [];
+
+    async function fetchGuestbook() {
+        try {
+            const q = query(
+                collection(db, "guestbook"),
+                orderBy("timestamp", "desc"),
+            );
+            const querySnapshot = await getDocs(q);
+            wishes = querySnapshot.docs.map((doc) => {
+                const data = doc.data();
+                return {
+                    id: doc.id,
+                    ...data,
+                    timestamp: data.timestamp?.toDate
+                        ? data.timestamp.toDate()
+                        : new Date(data.timestamp) || new Date(),
+                };
+            });
+        } catch (e) {
+            console.error("Error fetching Guestbook:", e);
+        }
+    }
 
     function logout() {
         push("/login");
@@ -79,8 +106,15 @@
         }
     }
 
-    function deleteWish(id: number) {
-        wishes = wishes.filter((w) => w.id !== id);
+    async function deleteWish(id: string) {
+        if (!confirm("Are you sure you want to delete this wish?")) return;
+        try {
+            await deleteDoc(doc(db, "guestbook", id));
+            await fetchGuestbook();
+        } catch (e) {
+            console.error("Error deleting wish:", e);
+            alert("Failed to delete wish.");
+        }
     }
 
     async function testConnection() {
@@ -119,7 +153,9 @@
                         ></path></svg
                     >
                 </label>
-                <a href="/admin" class="btn btn-ghost text-xl">Dashboard</a>
+                <button class="btn btn-ghost text-xl" on:click={refreshData}
+                    >Refresh</button
+                >
             </div>
             <div class="flex-none gap-2">
                 <button class="btn btn-ghost" on:click={toggleLanguage}>
