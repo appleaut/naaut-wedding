@@ -954,11 +954,11 @@
                 >
             </li>
             <div class="divider"></div>
-            <li>
+            <!-- <li>
                 <button on:click={testConnection}
                     >{translations[$language].test_connection}</button
                 >
-            </li>
+            </li> -->
             <li>
                 <a href="/" target="_blank"
                     >{translations[$language].view_site}</a
