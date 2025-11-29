@@ -1,8 +1,9 @@
 <script lang="ts">
-    import { config } from "../lib/store";
+    import { config, language } from "../lib/store";
     import { onMount, onDestroy } from "svelte";
     import { generatePayload } from "../lib/promptpay";
     import { parseDate } from "../lib/date";
+    import { translations } from "../lib/translations";
 
     let show = false;
     let interval: any;
@@ -32,8 +33,10 @@
 {#if $config.showQRCode && show}
     <div class="py-10 bg-primary text-primary-content">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-4">Gift for the Couple</h2>
-            <p class="mb-8">Scan to send a gift</p>
+            <h2 class="text-3xl font-bold mb-4">
+                {translations[$language].gift_for_couple}
+            </h2>
+            <p class="mb-8">{translations[$language].scan_to_gift}</p>
 
             <div class="card bg-base-100 w-64 mx-auto shadow-xl">
                 <figure class="px-10 pt-10">
@@ -47,7 +50,10 @@
                         <div
                             class="w-[150px] h-[150px] bg-base-200 flex items-center justify-center rounded-xl text-base-content"
                         >
-                            <span class="text-xs">Invalid Account No.</span>
+                            <span class="text-xs"
+                                >{translations[$language]
+                                    .invalid_account_no}</span
+                            >
                         </div>
                     {/if}
                 </figure>

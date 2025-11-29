@@ -101,6 +101,9 @@ export const translations = {
         theme_valentine: "Valentine",
         theme_luxury: "Luxury",
         theme_garden: "Garden",
+        gift_for_couple: "Gift for the Couple",
+        scan_to_gift: "Scan to send a gift",
+        invalid_account_no: "Invalid Account No.",
     },
     th: {
         home: "หน้าแรก",
@@ -204,6 +207,9 @@ export const translations = {
         theme_valentine: "วาเลนไทน์",
         theme_luxury: "หรูหรา",
         theme_garden: "ในสวน",
+        gift_for_couple: "ของขวัญสำหรับคู่บ่าวสาว",
+        scan_to_gift: "สแกนเพื่อส่งของขวัญ",
+        invalid_account_no: "เลขที่บัญชีไม่ถูกต้อง",
     }
 };
 
