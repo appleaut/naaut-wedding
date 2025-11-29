@@ -8,10 +8,11 @@
 >
   <aside>
     <p class="font-serif italic text-lg mb-2">
-      Thank you for celebrating with us
+      {translations[$language].thank_you_celebrating}
     </p>
     <p class="text-xs tracking-widest uppercase opacity-60">
-      Copyright © {new Date().getFullYear()} - All right reserved
+      Copyright © {new Date().getFullYear()} - {translations[$language]
+        .all_rights_reserved}
     </p>
   </aside>
 </footer>

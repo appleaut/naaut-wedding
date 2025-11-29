@@ -110,6 +110,8 @@ export const translations = {
         post: "Post",
         no_wishes_yet: "No wishes yet. Be the first!",
         post_wish_error: "Failed to post wish. Please try again.",
+        thank_you_celebrating: "Thank you for celebrating with us",
+        all_rights_reserved: "All rights reserved",
     },
     th: {
         home: "หน้าแรก",
@@ -222,6 +224,8 @@ export const translations = {
         post: "โพสต์",
         no_wishes_yet: "ยังไม่มีคำอวยพร มาเป็นคนแรกกันเถอะ!",
         post_wish_error: "ไม่สามารถส่งคำอวยพรได้ กรุณาลองใหม่อีกครั้ง",
+        thank_you_celebrating: "ขอบคุณที่มาร่วมฉลองกับเรา",
+        all_rights_reserved: "สงวนลิขสิทธิ์",
     }
 };
 
