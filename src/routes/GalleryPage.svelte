@@ -182,12 +182,15 @@
                 </svg>
             </button>
 
-            <img
-                src={images[selectedIndex]}
-                alt="Full size"
-                class="max-h-full max-w-full object-contain rounded-lg shadow-2xl"
-                on:click|stopPropagation
-            />
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div class="contents" on:click|stopPropagation>
+                <img
+                    src={images[selectedIndex]}
+                    alt="Full size"
+                    class="max-h-full max-w-full object-contain rounded-lg shadow-2xl"
+                />
+            </div>
         </div>
     {/if}
 </div>
