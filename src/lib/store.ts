@@ -26,10 +26,7 @@ export interface WeddingConfig {
         accountName: string;
         accountNumber: string;
     };
-    monkCeremonyTime: string;
-    khaenMakCeremonyTime: string;
-    waterBlessingCeremonyTime: string;
-    dinnerReceptionTime: string;
+    schedule: { time: string; title: string }[];
     sectionOrder: string[];
 }
 
@@ -59,10 +56,7 @@ const defaultConfig: WeddingConfig = {
         accountName: "Name",
         accountNumber: "123-456-7890"
     },
-    monkCeremonyTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "07:00",
-    khaenMakCeremonyTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "09:00",
-    waterBlessingCeremonyTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "09:30",
-    dinnerReceptionTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "18:00",
+    schedule: [],
     sectionOrder: [
         "Countdown",
         "EventDetails",

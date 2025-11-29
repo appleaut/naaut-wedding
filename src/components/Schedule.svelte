@@ -17,28 +17,13 @@
         };
     }
 
-    $: scheduleItems = [
-        {
-            raw: $config.monkCeremonyTime,
-            ...formatDateTime($config.monkCeremonyTime),
-            title: translations[$language].monk_ceremony,
-        },
-        {
-            raw: $config.khaenMakCeremonyTime,
-            ...formatDateTime($config.khaenMakCeremonyTime),
-            title: translations[$language].khaen_mak_procession,
-        },
-        {
-            raw: $config.waterBlessingCeremonyTime,
-            ...formatDateTime($config.waterBlessingCeremonyTime),
-            title: translations[$language].water_blessing,
-        },
-        {
-            raw: $config.dinnerReceptionTime,
-            ...formatDateTime($config.dinnerReceptionTime),
-            title: translations[$language].dinner_reception,
-        },
-    ].sort((a, b) => a.raw.localeCompare(b.raw));
+    $: scheduleItems = ($config.schedule || [])
+        .map((item: any) => ({
+            raw: item.time,
+            ...formatDateTime(item.time),
+            title: item.title,
+        }))
+        .sort((a: any, b: any) => a.raw.localeCompare(b.raw));
 </script>
 
 {#if $config.showSchedule}

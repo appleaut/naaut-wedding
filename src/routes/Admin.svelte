@@ -44,20 +44,14 @@
                     data.qrCodeStartTime = formatDate(data.qrCodeStartTime);
                 if (data.qrCodeEndTime)
                     data.qrCodeEndTime = formatDate(data.qrCodeEndTime);
-                if (data.monkCeremonyTime)
-                    data.monkCeremonyTime = formatDate(data.monkCeremonyTime);
-                if (data.khaenMakCeremonyTime)
-                    data.khaenMakCeremonyTime = formatDate(
-                        data.khaenMakCeremonyTime,
-                    );
-                if (data.waterBlessingCeremonyTime)
-                    data.waterBlessingCeremonyTime = formatDate(
-                        data.waterBlessingCeremonyTime,
-                    );
-                if (data.dinnerReceptionTime)
-                    data.dinnerReceptionTime = formatDate(
-                        data.dinnerReceptionTime,
-                    );
+
+                // Format times in schedule
+                if (data.schedule && Array.isArray(data.schedule)) {
+                    data.schedule = data.schedule.map((item: any) => ({
+                        ...item,
+                        time: formatDate(item.time),
+                    }));
+                }
 
                 if (!data.sectionOrder) {
                     data.sectionOrder = [
@@ -192,22 +186,14 @@
             if (configToSave.qrCodeEndTime)
                 configToSave.qrCodeEndTime = toISO(configToSave.qrCodeEndTime);
 
-            if (configToSave.monkCeremonyTime)
-                configToSave.monkCeremonyTime = toISO(
-                    configToSave.monkCeremonyTime,
+            if (configToSave.schedule && Array.isArray(configToSave.schedule)) {
+                configToSave.schedule = configToSave.schedule.map(
+                    (item: any) => ({
+                        ...item,
+                        time: toISO(item.time),
+                    }),
                 );
-            if (configToSave.khaenMakCeremonyTime)
-                configToSave.khaenMakCeremonyTime = toISO(
-                    configToSave.khaenMakCeremonyTime,
-                );
-            if (configToSave.waterBlessingCeremonyTime)
-                configToSave.waterBlessingCeremonyTime = toISO(
-                    configToSave.waterBlessingCeremonyTime,
-                );
-            if (configToSave.dinnerReceptionTime)
-                configToSave.dinnerReceptionTime = toISO(
-                    configToSave.dinnerReceptionTime,
-                );
+            }
 
             await setDoc(doc(db, "config", "main"), configToSave);
             modalMessage = translations[$language].config_saved;
@@ -321,6 +307,15 @@
             }
         }
         $config.sectionOrder = newOrder;
+    }
+
+    function addScheduleItem() {
+        if (!$config.schedule) $config.schedule = [];
+        $config.schedule = [...$config.schedule, { time: "", title: "" }];
+    }
+
+    function removeScheduleItem(index: number) {
+        $config.schedule = $config.schedule.filter((_, i) => i !== index);
     }
 </script>
 
@@ -552,71 +547,95 @@
                     <div class="divider">
                         {translations[$language].schedule_settings}
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-control">
-                            <label class="label" for="monkCeremonyTime"
-                                ><span class="label-text"
-                                    >{translations[$language]
-                                        .monk_ceremony}</span
-                                ></label
+
+                    <div class="space-y-4">
+                        {#if $config.schedule}
+                            {#each $config.schedule as item, i}
+                                <div class="card bg-base-200 p-4">
+                                    <div
+                                        class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                                    >
+                                        <div class="form-control">
+                                            <label
+                                                class="label"
+                                                for="schedule-time-{i}"
+                                            >
+                                                <span class="label-text"
+                                                    >{translations[$language]
+                                                        .event_time}</span
+                                                >
+                                            </label>
+                                            <input
+                                                type="text"
+                                                id="schedule-time-{i}"
+                                                bind:value={item.time}
+                                                use:datePicker={item.time}
+                                                class="input input-bordered"
+                                                placeholder="DD/MM/YYYY HH:mm"
+                                            />
+                                        </div>
+                                        <div class="form-control">
+                                            <label
+                                                class="label"
+                                                for="schedule-title-{i}"
+                                            >
+                                                <span class="label-text"
+                                                    >{translations[$language]
+                                                        .event_title}</span
+                                                >
+                                            </label>
+                                            <div class="flex gap-2">
+                                                <input
+                                                    type="text"
+                                                    id="schedule-title-{i}"
+                                                    bind:value={item.title}
+                                                    class="input input-bordered flex-1"
+                                                />
+                                                <button
+                                                    class="btn btn-error btn-square"
+                                                    on:click={() =>
+                                                        removeScheduleItem(i)}
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-6 w-6"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                        ><path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M6 18L18 6M6 6l12 12"
+                                                        /></svg
+                                                    >
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {/each}
+                        {/if}
+
+                        <button
+                            class="btn btn-primary w-full"
+                            on:click={addScheduleItem}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-5 w-5 mr-2"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                ><path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 4v16m8-8H4"
+                                /></svg
                             >
-                            <input
-                                type="text"
-                                id="monkCeremonyTime"
-                                bind:value={$config.monkCeremonyTime}
-                                use:datePicker={$config.monkCeremonyTime}
-                                class="input input-bordered"
-                                placeholder="DD/MM/YYYY HH:mm"
-                            />
-                        </div>
-                        <div class="form-control">
-                            <label class="label" for="khaenMakCeremonyTime"
-                                ><span class="label-text"
-                                    >{translations[$language]
-                                        .khaen_mak_procession}</span
-                                ></label
-                            >
-                            <input
-                                type="text"
-                                id="khaenMakCeremonyTime"
-                                bind:value={$config.khaenMakCeremonyTime}
-                                use:datePicker={$config.khaenMakCeremonyTime}
-                                class="input input-bordered"
-                                placeholder="DD/MM/YYYY HH:mm"
-                            />
-                        </div>
-                        <div class="form-control">
-                            <label class="label" for="waterBlessingCeremonyTime"
-                                ><span class="label-text"
-                                    >{translations[$language]
-                                        .water_blessing}</span
-                                ></label
-                            >
-                            <input
-                                type="text"
-                                id="waterBlessingCeremonyTime"
-                                bind:value={$config.waterBlessingCeremonyTime}
-                                use:datePicker={$config.waterBlessingCeremonyTime}
-                                class="input input-bordered"
-                                placeholder="DD/MM/YYYY HH:mm"
-                            />
-                        </div>
-                        <div class="form-control">
-                            <label class="label" for="dinnerReceptionTime"
-                                ><span class="label-text"
-                                    >{translations[$language]
-                                        .dinner_reception}</span
-                                ></label
-                            >
-                            <input
-                                type="text"
-                                id="dinnerReceptionTime"
-                                bind:value={$config.dinnerReceptionTime}
-                                use:datePicker={$config.dinnerReceptionTime}
-                                class="input input-bordered"
-                                placeholder="DD/MM/YYYY HH:mm"
-                            />
-                        </div>
+                            {translations[$language].add_schedule_item}
+                        </button>
                     </div>
 
                     <div class="divider">

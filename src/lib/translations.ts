@@ -116,6 +116,10 @@ export const translations = {
         section_order: "Section Order",
         move_up: "Move Up",
         move_down: "Move Down",
+        add_schedule_item: "Add Schedule Item",
+        remove_schedule_item: "Remove",
+        event_title: "Event Title",
+        event_time: "Event Time",
     },
     th: {
         home: "หน้าแรก",
@@ -234,7 +238,12 @@ export const translations = {
         section_order: "ลำดับการแสดงผล",
         move_up: "เลื่อนขึ้น",
         move_down: "เลื่อนลง",
+        add_schedule_item: "เพิ่มกำหนดการ",
+        remove_schedule_item: "ลบ",
+        event_title: "ชื่อกิจกรรม",
+        event_time: "เวลา",
     }
+
 };
 
 export type Language = 'en' | 'th';
