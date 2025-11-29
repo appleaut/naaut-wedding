@@ -15,6 +15,7 @@ export interface WeddingConfig {
     showVideo: boolean;
     showMap: boolean;
     showCountdown: boolean;
+    showEventDetails: boolean;
     showSchedule: boolean;
     showQRCode: boolean;
     qrCodeStartTime: string;
@@ -45,6 +46,7 @@ const defaultConfig: WeddingConfig = {
     showVideo: true,
     showMap: true,
     showCountdown: true,
+    showEventDetails: true,
     showSchedule: true,
     showQRCode: true,
     qrCodeStartTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),

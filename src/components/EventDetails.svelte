@@ -5,7 +5,7 @@
   import { th, enGB } from "date-fns/locale";
 </script>
 
-{#if $config.showSchedule}
+{#if $config.showEventDetails}
   <div class="hero bg-white py-20 text-wedding-dark font-sans">
     <div class="hero-content flex-col w-full max-w-4xl">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full text-center">

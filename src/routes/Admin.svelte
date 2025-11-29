@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { config, language } from "../lib/store";
+    import { config, language, type WeddingConfig } from "../lib/store";
     import { translations } from "../lib/translations";
     import { push } from "svelte-spa-router";
     import { db, auth } from "../lib/firebase";
@@ -65,6 +65,10 @@
                         "RSVP",
                         "Guestbook",
                     ];
+                }
+
+                if (data.showEventDetails === undefined) {
+                    data.showEventDetails = true;
                 }
 
                 config.set(data as any);
@@ -317,6 +321,18 @@
     function removeScheduleItem(index: number) {
         $config.schedule = $config.schedule.filter((_, i) => i !== index);
     }
+
+    const sectionConfigMap: Record<string, keyof WeddingConfig> = {
+        Countdown: "showCountdown",
+        EventDetails: "showEventDetails",
+        Schedule: "showSchedule",
+        Map: "showMap",
+        Gallery: "showGallery",
+        Video: "showVideo",
+        QRCode: "showQRCode",
+        RSVP: "showRSVP",
+        Guestbook: "showGuestbook",
+    };
 </script>
 
 <div class="drawer lg:drawer-open">
@@ -685,146 +701,6 @@
                         </div>
                     </div>
 
-                    <div class="divider">{translations[$language].toggles}</div>
-
-                    <div
-                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-                    >
-                        <div
-                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
-                        >
-                            <label
-                                class="label cursor-pointer justify-start gap-4"
-                            >
-                                <span class="label-text font-medium"
-                                    >{translations[$language]
-                                        .show_gallery}</span
-                                >
-                                <input
-                                    type="checkbox"
-                                    bind:checked={$config.showGallery}
-                                    class="toggle toggle-primary"
-                                />
-                            </label>
-                        </div>
-                        <div
-                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
-                        >
-                            <label
-                                class="label cursor-pointer justify-start gap-4"
-                            >
-                                <span class="label-text font-medium"
-                                    >{translations[$language].show_rsvp}</span
-                                >
-                                <input
-                                    type="checkbox"
-                                    bind:checked={$config.showRSVP}
-                                    class="toggle toggle-primary"
-                                />
-                            </label>
-                        </div>
-                        <div
-                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
-                        >
-                            <label
-                                class="label cursor-pointer justify-start gap-4"
-                            >
-                                <span class="label-text font-medium"
-                                    >{translations[$language].show_map}</span
-                                >
-                                <input
-                                    type="checkbox"
-                                    bind:checked={$config.showMap}
-                                    class="toggle toggle-primary"
-                                />
-                            </label>
-                        </div>
-                        <div
-                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
-                        >
-                            <label
-                                class="label cursor-pointer justify-start gap-4"
-                            >
-                                <span class="label-text font-medium"
-                                    >{translations[$language].show_video}</span
-                                >
-                                <input
-                                    type="checkbox"
-                                    bind:checked={$config.showVideo}
-                                    class="toggle toggle-primary"
-                                />
-                            </label>
-                        </div>
-                        <div
-                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
-                        >
-                            <label
-                                class="label cursor-pointer justify-start gap-4"
-                            >
-                                <span class="label-text font-medium"
-                                    >{translations[$language]
-                                        .show_guestbook}</span
-                                >
-                                <input
-                                    type="checkbox"
-                                    bind:checked={$config.showGuestbook}
-                                    class="toggle toggle-primary"
-                                />
-                            </label>
-                        </div>
-                        <div
-                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
-                        >
-                            <label
-                                class="label cursor-pointer justify-start gap-4"
-                            >
-                                <span class="label-text font-medium"
-                                    >{translations[$language]
-                                        .show_countdown}</span
-                                >
-                                <input
-                                    type="checkbox"
-                                    bind:checked={$config.showCountdown}
-                                    class="toggle toggle-primary"
-                                />
-                            </label>
-                        </div>
-                        <div
-                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
-                        >
-                            <label
-                                class="label cursor-pointer justify-start gap-4"
-                            >
-                                <span class="label-text font-medium"
-                                    >{translations[$language]
-                                        .show_schedule}</span
-                                >
-                                <input
-                                    type="checkbox"
-                                    bind:checked={$config.showSchedule}
-                                    class="toggle toggle-primary"
-                                />
-                            </label>
-                        </div>
-                        <div
-                            class="form-control border rounded-lg p-2 hover:bg-base-200 transition-colors"
-                        >
-                            <label
-                                class="label cursor-pointer justify-start gap-4"
-                            >
-                                <span class="label-text font-medium"
-                                    >{translations[$language]
-                                        .show_qr_code}</span
-                                >
-                                <input
-                                    type="checkbox"
-                                    bind:checked={$config.showQRCode}
-                                    class="toggle toggle-primary"
-                                />
-                            </label>
-                        </div>
-                    </div>
-
                     <div class="divider">
                         {translations[$language].section_order}
                     </div>
@@ -835,9 +711,22 @@
                                     <div
                                         class="flex items-center justify-between p-2 bg-base-200 rounded mb-2"
                                     >
-                                        <span class="font-medium"
-                                            >{section}</span
-                                        >
+                                        <div class="flex items-center gap-4">
+                                            <input
+                                                type="checkbox"
+                                                class="toggle toggle-primary toggle-sm"
+                                                bind:checked={
+                                                    $config[
+                                                        sectionConfigMap[
+                                                            section
+                                                        ]
+                                                    ]
+                                                }
+                                            />
+                                            <span class="font-medium"
+                                                >{section}</span
+                                            >
+                                        </div>
                                         <div class="flex gap-2">
                                             <button
                                                 class="btn btn-sm btn-square btn-ghost"
