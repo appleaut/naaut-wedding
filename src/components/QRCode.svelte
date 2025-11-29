@@ -1,44 +1,66 @@
 <script lang="ts">
-  import { config } from '../lib/store';
-  import { onMount, onDestroy } from 'svelte';
+    import { config } from "../lib/store";
+    import { onMount, onDestroy } from "svelte";
+    import { generatePayload } from "../lib/promptpay";
+    import { parseDate } from "../lib/date";
 
-  let show = false;
-  let interval: number;
+    let show = false;
+    let interval: any;
 
-  function checkTime() {
-      const now = new Date();
-      const start = new Date($config.qrCodeStartTime);
-      const end = new Date($config.qrCodeEndTime);
-      show = now >= start && now <= end;
-  }
+    $: payload = generatePayload($config.bankAccount.accountNumber);
+    $: qrUrl = payload
+        ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(payload)}`
+        : "";
 
-  onMount(() => {
-      checkTime();
-      interval = setInterval(checkTime, 60000); // Check every minute
-  });
+    function checkTime() {
+        const now = new Date();
+        const start = parseDate($config.qrCodeStartTime);
+        const end = parseDate($config.qrCodeEndTime);
+        show = now >= start && now <= end;
+    }
 
-  onDestroy(() => {
-      clearInterval(interval);
-  });
+    onMount(() => {
+        checkTime();
+        interval = setInterval(checkTime, 60000); // Check every minute
+    });
+
+    onDestroy(() => {
+        clearInterval(interval);
+    });
 </script>
 
 {#if $config.showQRCode && show}
-<div class="py-10 bg-primary text-primary-content">
-    <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold mb-4">Gift for the Couple</h2>
-        <p class="mb-8">Scan to send a gift</p>
-        
-        <div class="card bg-base-100 w-64 mx-auto shadow-xl">
-            <figure class="px-10 pt-10">
-                <!-- Placeholder QR Code -->
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example" alt="QR Code" class="rounded-xl" />
-            </figure>
-            <div class="card-body items-center text-center text-base-content">
-                <h2 class="card-title">{$config.bankAccount.bankName}</h2>
-                <p>{$config.bankAccount.accountName}</p>
-                <p class="font-mono bg-base-200 p-2 rounded">{$config.bankAccount.accountNumber}</p>
+    <div class="py-10 bg-primary text-primary-content">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Gift for the Couple</h2>
+            <p class="mb-8">Scan to send a gift</p>
+
+            <div class="card bg-base-100 w-64 mx-auto shadow-xl">
+                <figure class="px-10 pt-10">
+                    {#if qrUrl}
+                        <img
+                            src={qrUrl}
+                            alt="PromptPay QR Code"
+                            class="rounded-xl"
+                        />
+                    {:else}
+                        <div
+                            class="w-[150px] h-[150px] bg-base-200 flex items-center justify-center rounded-xl text-base-content"
+                        >
+                            <span class="text-xs">Invalid Account No.</span>
+                        </div>
+                    {/if}
+                </figure>
+                <div
+                    class="card-body items-center text-center text-base-content"
+                >
+                    <h2 class="card-title">{$config.bankAccount.bankName}</h2>
+                    <p>{$config.bankAccount.accountName}</p>
+                    <p class="font-mono bg-base-200 p-2 rounded">
+                        {$config.bankAccount.accountNumber}
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {/if}

@@ -46,7 +46,7 @@ const defaultConfig: WeddingConfig = {
     showSchedule: true,
     showQRCode: true,
     qrCodeStartTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
-    qrCodeEndTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
+    qrCodeEndTime: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000 - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
     videoUrl: "",
     galleryImages: [],
     bankAccount: {
