@@ -18,6 +18,12 @@
   let isLoading = true;
 
   onMount(async () => {
+    // Set a timeout to ensure we don't get stuck on loading screen
+    const timeout = setTimeout(() => {
+      console.warn("Config load timed out, using defaults");
+      isLoading = false;
+    }, 3000);
+
     try {
       const docRef = doc(db, "config", "main");
       const docSnap = await getDoc(docRef);
@@ -27,6 +33,7 @@
     } catch (e) {
       console.error("Error loading config:", e);
     } finally {
+      clearTimeout(timeout);
       isLoading = false;
     }
   });
