@@ -95,7 +95,7 @@
     </button>
 
     <div class="dropdown dropdown-end lg:hidden">
-      <label tabindex="0" class="btn btn-ghost">
+      <div role="button" tabindex="0" class="btn btn-ghost">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5"
@@ -110,9 +110,10 @@
             d="M4 6h16M4 12h8m-8 6h16"
           />
         </svg>
-      </label>
+      </div>
       <ul
         tabindex="0"
+        role="menu"
         class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52"
       >
         {#each sections as section}

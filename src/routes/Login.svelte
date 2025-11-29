@@ -113,13 +113,13 @@
               bind:value={password}
               required
             />
-            <label class="label">
+            <div class="label">
               <a
                 href={"#"}
                 class="label-text-alt link link-hover"
                 on:click|preventDefault={toggleReset}>Forgot password?</a
               >
-            </label>
+            </div>
           </div>
           {#if error}
             <div class="alert alert-error text-sm mt-2 shadow-lg rounded-lg">

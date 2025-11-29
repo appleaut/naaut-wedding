@@ -531,67 +531,69 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="form-control">
-                            <label class="label" for="groomName"
-                                ><span class="label-text"
-                                    >{translations[$language].groom_name}</span
-                                ></label
-                            >
+                            <div class="label">
+                                <span class="label-text">
+                                    {translations[$language].groom_name}
+                                </span>
+                            </div>
                             <input
                                 type="text"
-                                id="groomName"
+                                aria-label={translations[$language].groom_name}
                                 bind:value={$config.groomName}
                                 class="input input-bordered"
                             />
                         </div>
                         <div class="form-control">
-                            <label class="label" for="groomNickname">
+                            <div class="label">
                                 <span class="label-text">
                                     {translations[$language].groom_nickname}
                                 </span>
-                            </label>
+                            </div>
                             <input
                                 type="text"
-                                id="groomNickname"
+                                aria-label={translations[$language]
+                                    .groom_nickname}
                                 bind:value={$config.groomNickname}
                                 class="input input-bordered"
                             />
                         </div>
                         <div class="form-control">
-                            <label class="label" for="brideName">
+                            <div class="label">
                                 <span class="label-text">
                                     {translations[$language].bride_name}
                                 </span>
-                            </label>
+                            </div>
                             <input
                                 type="text"
-                                id="brideName"
+                                aria-label={translations[$language].bride_name}
                                 bind:value={$config.brideName}
                                 class="input input-bordered"
                             />
                         </div>
                         <div class="form-control">
-                            <label class="label" for="input-brideNickname">
+                            <div class="label">
                                 <span class="label-text">
                                     {translations[$language].bride_nickname}
                                 </span>
-                            </label>
+                            </div>
                             <input
                                 type="text"
-                                id="input-brideNickname"
+                                aria-label={translations[$language]
+                                    .bride_nickname}
                                 bind:value={$config.brideNickname}
                                 class="input input-bordered"
                             />
                         </div>
                         <div class="form-control">
-                            <label class="label" for="weddingDate"
-                                ><span class="label-text"
-                                    >{translations[$language]
-                                        .wedding_date}</span
-                                ></label
-                            >
+                            <div class="label">
+                                <span class="label-text">
+                                    {translations[$language].wedding_date}
+                                </span>
+                            </div>
                             <input
                                 type="text"
-                                id="weddingDate"
+                                aria-label={translations[$language]
+                                    .wedding_date}
                                 bind:value={$config.weddingDate}
                                 use:datePicker={$config.weddingDate}
                                 class="input input-bordered"
@@ -599,26 +601,26 @@
                             />
                         </div>
                         <div class="form-control">
-                            <label class="label" for="weddingLocation"
-                                ><span class="label-text"
-                                    >{translations[$language].location}</span
-                                ></label
-                            >
+                            <div class="label">
+                                <span class="label-text">
+                                    {translations[$language].location}
+                                </span>
+                            </div>
                             <input
                                 type="text"
-                                id="weddingLocation"
+                                aria-label={translations[$language].location}
                                 bind:value={$config.weddingLocation}
                                 class="input input-bordered"
                             />
                         </div>
                         <div class="form-control">
-                            <label class="label" for="themeColor"
-                                ><span class="label-text"
-                                    >{translations[$language].theme}</span
-                                ></label
-                            >
+                            <div class="label">
+                                <span class="label-text">
+                                    {translations[$language].theme}
+                                </span>
+                            </div>
                             <select
-                                id="themeColor"
+                                aria-label={translations[$language].theme}
                                 bind:value={$config.themeColor}
                                 class="select select-bordered"
                             >
@@ -645,12 +647,12 @@
                             <div
                                 class="form-control md:col-span-2 bg-base-200 p-4 rounded-box"
                             >
-                                <label class="label pt-0">
+                                <div class="label pt-0">
                                     <span class="label-text font-bold"
                                         >{translations[$language]
                                             .custom_colors}</span
                                     >
-                                </label>
+                                </div>
                                 <div
                                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4"
                                 >
@@ -790,26 +792,26 @@
                             </div>
                         {/if}
                         <div class="form-control">
-                            <label class="label" for="videoUrl"
-                                ><span class="label-text"
-                                    >{translations[$language].video_url}</span
-                                ></label
-                            >
+                            <div class="label">
+                                <span class="label-text">
+                                    {translations[$language].video_url}
+                                </span>
+                            </div>
                             <input
                                 type="text"
-                                id="videoUrl"
+                                aria-label={translations[$language].video_url}
                                 bind:value={$config.videoUrl}
                                 class="input input-bordered"
                             />
                         </div>
                         <div class="form-control md:col-span-2">
-                            <label class="label" for="description"
-                                ><span class="label-text"
-                                    >{translations[$language].description}</span
-                                ></label
-                            >
+                            <div class="label">
+                                <span class="label-text">
+                                    {translations[$language].description}
+                                </span>
+                            </div>
                             <textarea
-                                id="description"
+                                aria-label={translations[$language].description}
                                 bind:value={$config.description}
                                 class="textarea textarea-bordered h-24"
                             ></textarea>
@@ -821,15 +823,15 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="form-control">
-                            <label class="label" for="qrCodeStartTime"
-                                ><span class="label-text"
-                                    >{translations[$language]
-                                        .qr_code_start}</span
-                                ></label
-                            >
+                            <div class="label">
+                                <span class="label-text">
+                                    {translations[$language].qr_code_start}
+                                </span>
+                            </div>
                             <input
                                 type="text"
-                                id="qrCodeStartTime"
+                                aria-label={translations[$language]
+                                    .qr_code_start}
                                 bind:value={$config.qrCodeStartTime}
                                 use:datePicker={$config.qrCodeStartTime}
                                 class="input input-bordered"
@@ -837,14 +839,14 @@
                             />
                         </div>
                         <div class="form-control">
-                            <label class="label" for="qrCodeEndTime"
-                                ><span class="label-text"
-                                    >{translations[$language].qr_code_end}</span
-                                ></label
-                            >
+                            <div class="label">
+                                <span class="label-text">
+                                    {translations[$language].qr_code_end}
+                                </span>
+                            </div>
                             <input
                                 type="text"
-                                id="qrCodeEndTime"
+                                aria-label={translations[$language].qr_code_end}
                                 bind:value={$config.qrCodeEndTime}
                                 use:datePicker={$config.qrCodeEndTime}
                                 class="input input-bordered"
@@ -1097,7 +1099,7 @@
                     <tbody>
                         {#each rsvps as rsvp}
                             <tr>
-                                <td>{rsvp.name}</td>
+                                <td class="whitespace-nowrap">{rsvp.name}</td>
                                 <td class="whitespace-nowrap">
                                     {#if rsvp.status === "attending"}
                                         <div class="badge badge-success">
