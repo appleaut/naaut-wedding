@@ -1017,56 +1017,143 @@
                 {/each}
             </div>
         {:else if activeTab === "change-password"}
-            <div class="card bg-base-100 shadow-xl max-w-md mx-auto">
-                <div class="card-body">
-                    <h2 class="card-title">
-                        {translations[$language].change_password}
-                    </h2>
-                    <div class="form-control">
-                        <label class="label" for="newPassword">
-                            <span class="label-text"
-                                >{translations[$language].new_password}</span
+            <div class="flex justify-center items-center min-h-[50vh]">
+                <div class="card bg-base-100 shadow-xl w-full max-w-md">
+                    <div class="card-body">
+                        <div class="flex flex-col items-center mb-6">
+                            <div class="avatar placeholder mb-4">
+                                <div
+                                    class="bg-neutral text-neutral-content rounded-full w-16"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-8 h-8"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                                        />
+                                    </svg>
+                                </div>
+                            </div>
+                            <h2 class="card-title text-2xl font-bold">
+                                {translations[$language].change_password}
+                            </h2>
+                            <p class="text-base-content/60 text-sm mt-1">
+                                {translations[$language].secure_account}
+                            </p>
+                        </div>
+
+                        <div class="form-control w-full">
+                            <label class="label" for="newPassword">
+                                <span class="label-text font-medium"
+                                    >{translations[$language]
+                                        .new_password}</span
+                                >
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="password"
+                                    id="newPassword"
+                                    bind:value={newPassword}
+                                    class="input input-bordered w-full pr-10"
+                                    placeholder="••••••••"
+                                />
+                                <div
+                                    class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-base-content/40"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-5 h-5"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"
+                                        />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-control w-full mt-4">
+                            <label class="label" for="confirmPassword">
+                                <span class="label-text font-medium"
+                                    >{translations[$language]
+                                        .confirm_password}</span
+                                >
+                            </label>
+                            <div class="relative">
+                                <input
+                                    type="password"
+                                    id="confirmPassword"
+                                    bind:value={confirmNewPassword}
+                                    class="input input-bordered w-full pr-10"
+                                    placeholder="••••••••"
+                                />
+                                <div
+                                    class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-base-content/40"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-5 h-5"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-actions justify-end mt-8">
+                            <button
+                                class="btn btn-primary w-full"
+                                on:click={handleChangePassword}
+                                disabled={!newPassword ||
+                                    !confirmNewPassword ||
+                                    newPassword !== confirmNewPassword}
                             >
-                        </label>
-                        <input
-                            type="password"
-                            id="newPassword"
-                            bind:value={newPassword}
-                            class="input input-bordered"
-                        />
-                    </div>
-                    <div class="form-control">
-                        <label class="label" for="confirmPassword">
-                            <span class="label-text"
-                                >{translations[$language]
-                                    .confirm_password}</span
-                            >
-                        </label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            bind:value={confirmNewPassword}
-                            class="input input-bordered"
-                        />
-                    </div>
-                    <div class="card-actions justify-end mt-4">
-                        <button
-                            class="btn btn-primary"
-                            on:click={handleChangePassword}
-                        >
-                            {translations[$language].update_password}
-                        </button>
+                                {#if newPassword && confirmNewPassword && newPassword === confirmNewPassword}
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-5 h-5 mr-2"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M4.5 12.75l6 6 9-13.5"
+                                        />
+                                    </svg>
+                                {/if}
+                                {translations[$language].update_password}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         {/if}
     </div>
     <div class="drawer-side">
-        <label
-            for="my-drawer-2"
-            aria-label="close sidebar"
-            class="drawer-overlay"
-        ></label>
         <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
             <!-- Sidebar content here -->
             <li class="mb-4 text-xl font-bold px-4">
