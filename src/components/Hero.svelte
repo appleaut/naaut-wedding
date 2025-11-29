@@ -35,14 +35,16 @@
           {$config.weddingLocation}
         </p>
       </div>
-      <div class="mt-8">
-        <a
-          href="#rsvp"
-          class="btn btn-outline text-white border-white hover:bg-white hover:text-wedding-dark hover:border-white rounded-none px-8 tracking-widest"
-        >
-          {translations[$language].rsvp}
-        </a>
-      </div>
+      {#if $config.showRSVP}
+        <div class="mt-8">
+          <a
+            href="#rsvp"
+            class="btn btn-outline text-white border-white hover:bg-white hover:text-wedding-dark hover:border-white rounded-none px-8 tracking-widest"
+          >
+            {translations[$language].rsvp}
+          </a>
+        </div>
+      {/if}
     </div>
   </div>
 </div>
