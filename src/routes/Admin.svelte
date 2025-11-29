@@ -137,11 +137,23 @@
         }
     }
 
+    let showToast = false;
+    let toastMessage = "";
+
+    function showToastNotification(message: string) {
+        toastMessage = message;
+        showToast = true;
+        setTimeout(() => {
+            showToast = false;
+        }, 3000);
+    }
+
     async function refreshData() {
         triggerConfirm(async () => {
             await fetchConfig();
             await fetchRSVPs();
             await fetchGuestbook();
+            showToastNotification(translations[$language].refresh_success);
         });
     }
 
@@ -1437,4 +1449,12 @@
             <button on:click={() => (showConfirmModal = false)}>close</button>
         </form>
     </dialog>
+{/if}
+
+{#if showToast}
+    <div class="toast toast-end">
+        <div class="alert alert-success">
+            <span>{toastMessage}</span>
+        </div>
+    </div>
 {/if}

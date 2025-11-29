@@ -144,6 +144,7 @@ export const translations = {
         display_name: "Display Name",
         dress_code: "Dress Code",
         dress_code_colors: "Dress Code Colors",
+        refresh_success: "Data refreshed successfully",
     },
     th: {
         home: "หน้าแรก",
@@ -290,6 +291,7 @@ export const translations = {
         display_name: "ชื่อที่แสดง",
         dress_code: "การแต่งกาย",
         dress_code_colors: "สีชุดที่แนะนำ",
+        refresh_success: "รีเฟรชข้อมูลเรียบร้อยแล้ว",
     }
 
 };
