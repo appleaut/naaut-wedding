@@ -6,6 +6,7 @@
   } from "firebase/auth";
   import { push } from "svelte-spa-router";
   import { onMount } from "svelte";
+  import banner from "../static/img/login_background.png";
 
   let email = "";
   let password = "";
@@ -35,50 +36,68 @@
   }
 </script>
 
-<div class="hero min-h-screen bg-base-200">
-  <div class="hero-content flex-col lg:flex-row-reverse">
-    <div class="text-center lg:text-left">
-      <h1 class="text-5xl font-bold">Admin Login</h1>
-      <p class="py-6">Access the wedding dashboard to manage your event.</p>
+<div
+  class="hero min-h-screen font-serif"
+  style="background-image: url({banner});"
+>
+  <div class="hero-overlay bg-black/60 backdrop-blur-sm"></div>
+  <div class="hero-content flex-col">
+    <div class="text-center mb-8">
+      <h1
+        class="text-5xl md:text-6xl font-bold text-white mb-2 font-['Playfair_Display']"
+      >
+        Admin Login
+      </h1>
+      <p class="text-white/80 text-lg tracking-wide">
+        Manage your wedding details
+      </p>
     </div>
-    <div class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+    <div
+      class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100/95 backdrop-blur"
+    >
       <form class="card-body" on:submit|preventDefault={handleLogin}>
         <div class="form-control">
           <label class="label" for="email">
-            <span class="label-text">Email</span>
+            <span class="label-text font-medium">Email</span>
           </label>
           <input
             type="email"
             id="email"
-            placeholder="email"
-            class="input input-bordered"
+            placeholder="email@example.com"
+            class="input input-bordered focus:border-primary focus:ring-1 focus:ring-primary"
             bind:value={email}
             required
           />
         </div>
         <div class="form-control">
           <label class="label" for="password">
-            <span class="label-text">Password</span>
+            <span class="label-text font-medium">Password</span>
           </label>
           <input
             type="password"
             id="password"
-            placeholder="password"
-            class="input input-bordered"
+            placeholder="••••••••"
+            class="input input-bordered focus:border-primary focus:ring-1 focus:ring-primary"
             bind:value={password}
             required
           />
-          <div class="label">
-            <a href="/login#forgot" class="label-text-alt link link-hover"
-              >Forgot password?</a
-            >
-          </div>
         </div>
         {#if error}
-          <div class="text-error text-sm">{error}</div>
+          <div class="alert alert-error text-sm mt-2 shadow-lg rounded-lg">
+            <span>{error}</span>
+          </div>
         {/if}
-        <div class="form-control mt-6">
-          <button class="btn btn-primary" disabled={loading}>Login</button>
+        <div class="form-control mt-8">
+          <button
+            class="btn btn-primary btn-block text-lg font-normal uppercase tracking-widest"
+            disabled={loading}
+          >
+            {#if loading}
+              <span class="loading loading-spinner"></span>
+            {:else}
+              Sign In
+            {/if}
+          </button>
         </div>
       </form>
     </div>
