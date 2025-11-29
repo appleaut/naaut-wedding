@@ -17,7 +17,7 @@
       await addDoc(collection(db, "rsvp"), {
         name,
         attendees:
-          status === "attending" ? attendees : status === "not-sure" ? 1 : 0,
+          status === "attending" || status === "not-sure" ? attendees : 0,
         message,
         status,
         timestamp: new Date(),
@@ -103,7 +103,7 @@
               </select>
             </div>
 
-            {#if status === "attending"}
+            {#if status === "attending" || status === "not-sure"}
               <div class="form-control">
                 <label class="label" for="attendees">
                   <span class="label-text font-serif text-lg"
