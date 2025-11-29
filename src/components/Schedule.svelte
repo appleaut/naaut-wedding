@@ -1,25 +1,44 @@
 <script lang="ts">
     import { config, language } from "../lib/store";
     import { translations } from "../lib/translations";
+    import { format } from "date-fns";
+    import { th, enGB } from "date-fns/locale";
+
+    function formatDateTime(isoString: string) {
+        if (!isoString) return { time: "", date: "" };
+        const date = new Date(isoString);
+        if (isNaN(date.getTime())) return { time: isoString, date: "" };
+
+        return {
+            time: format(date, "HH:mm"),
+            date: format(date, "d MMM yyyy", {
+                locale: $language === "th" ? th : enGB,
+            }),
+        };
+    }
 
     $: scheduleItems = [
         {
-            time: $config.monkCeremonyTime,
+            raw: $config.monkCeremonyTime,
+            ...formatDateTime($config.monkCeremonyTime),
             title: translations[$language].monk_ceremony,
         },
         {
-            time: $config.khaenMakCeremonyTime,
+            raw: $config.khaenMakCeremonyTime,
+            ...formatDateTime($config.khaenMakCeremonyTime),
             title: translations[$language].khaen_mak_procession,
         },
         {
-            time: $config.waterBlessingCeremonyTime,
+            raw: $config.waterBlessingCeremonyTime,
+            ...formatDateTime($config.waterBlessingCeremonyTime),
             title: translations[$language].water_blessing,
         },
         {
-            time: $config.dinnerReceptionTime,
+            raw: $config.dinnerReceptionTime,
+            ...formatDateTime($config.dinnerReceptionTime),
             title: translations[$language].dinner_reception,
         },
-    ].sort((a, b) => a.time.localeCompare(b.time));
+    ].sort((a, b) => a.raw.localeCompare(b.raw));
 </script>
 
 {#if $config.showSchedule}
@@ -43,10 +62,18 @@
                             <div
                                 class="flex flex-col md:flex-row md:items-center gap-2 md:gap-8 p-4 rounded-lg hover:bg-base-100 transition-colors duration-300"
                             >
-                                <span
-                                    class="text-2xl font-bold text-primary font-serif min-w-[100px]"
-                                    >{item.time}</span
+                                <div
+                                    class="flex flex-col items-center md:items-start min-w-[120px]"
                                 >
+                                    <span
+                                        class="text-3xl font-bold text-primary font-serif"
+                                        >{item.time}</span
+                                    >
+                                    <span
+                                        class="text-sm opacity-70 uppercase tracking-wider"
+                                        >{item.date}</span
+                                    >
+                                </div>
                                 <div>
                                     <h3 class="text-xl font-medium">
                                         {item.title}

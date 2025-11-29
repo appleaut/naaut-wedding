@@ -44,6 +44,20 @@
                     data.qrCodeStartTime = formatDate(data.qrCodeStartTime);
                 if (data.qrCodeEndTime)
                     data.qrCodeEndTime = formatDate(data.qrCodeEndTime);
+                if (data.monkCeremonyTime)
+                    data.monkCeremonyTime = formatDate(data.monkCeremonyTime);
+                if (data.khaenMakCeremonyTime)
+                    data.khaenMakCeremonyTime = formatDate(
+                        data.khaenMakCeremonyTime,
+                    );
+                if (data.waterBlessingCeremonyTime)
+                    data.waterBlessingCeremonyTime = formatDate(
+                        data.waterBlessingCeremonyTime,
+                    );
+                if (data.dinnerReceptionTime)
+                    data.dinnerReceptionTime = formatDate(
+                        data.dinnerReceptionTime,
+                    );
 
                 config.set(data as any);
             }
@@ -163,6 +177,23 @@
                 );
             if (configToSave.qrCodeEndTime)
                 configToSave.qrCodeEndTime = toISO(configToSave.qrCodeEndTime);
+
+            if (configToSave.monkCeremonyTime)
+                configToSave.monkCeremonyTime = toISO(
+                    configToSave.monkCeremonyTime,
+                );
+            if (configToSave.khaenMakCeremonyTime)
+                configToSave.khaenMakCeremonyTime = toISO(
+                    configToSave.khaenMakCeremonyTime,
+                );
+            if (configToSave.waterBlessingCeremonyTime)
+                configToSave.waterBlessingCeremonyTime = toISO(
+                    configToSave.waterBlessingCeremonyTime,
+                );
+            if (configToSave.dinnerReceptionTime)
+                configToSave.dinnerReceptionTime = toISO(
+                    configToSave.dinnerReceptionTime,
+                );
 
             await setDoc(doc(db, "config", "main"), configToSave);
             modalMessage = translations[$language].config_saved;
@@ -500,9 +531,9 @@
                                 type="text"
                                 id="monkCeremonyTime"
                                 bind:value={$config.monkCeremonyTime}
-                                use:timePicker={$config.monkCeremonyTime}
+                                use:datePicker={$config.monkCeremonyTime}
                                 class="input input-bordered"
-                                placeholder="HH:mm"
+                                placeholder="DD/MM/YYYY HH:mm"
                             />
                         </div>
                         <div class="form-control">
@@ -516,9 +547,9 @@
                                 type="text"
                                 id="khaenMakCeremonyTime"
                                 bind:value={$config.khaenMakCeremonyTime}
-                                use:timePicker={$config.khaenMakCeremonyTime}
+                                use:datePicker={$config.khaenMakCeremonyTime}
                                 class="input input-bordered"
-                                placeholder="HH:mm"
+                                placeholder="DD/MM/YYYY HH:mm"
                             />
                         </div>
                         <div class="form-control">
@@ -532,9 +563,9 @@
                                 type="text"
                                 id="waterBlessingCeremonyTime"
                                 bind:value={$config.waterBlessingCeremonyTime}
-                                use:timePicker={$config.waterBlessingCeremonyTime}
+                                use:datePicker={$config.waterBlessingCeremonyTime}
                                 class="input input-bordered"
-                                placeholder="HH:mm"
+                                placeholder="DD/MM/YYYY HH:mm"
                             />
                         </div>
                         <div class="form-control">
@@ -548,9 +579,9 @@
                                 type="text"
                                 id="dinnerReceptionTime"
                                 bind:value={$config.dinnerReceptionTime}
-                                use:timePicker={$config.dinnerReceptionTime}
+                                use:datePicker={$config.dinnerReceptionTime}
                                 class="input input-bordered"
-                                placeholder="HH:mm"
+                                placeholder="DD/MM/YYYY HH:mm"
                             />
                         </div>
                     </div>

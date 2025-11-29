@@ -58,10 +58,10 @@ const defaultConfig: WeddingConfig = {
         accountName: "Name",
         accountNumber: "123-456-7890"
     },
-    monkCeremonyTime: "07:00",
-    khaenMakCeremonyTime: "09:00",
-    waterBlessingCeremonyTime: "09:30",
-    dinnerReceptionTime: "18:00"
+    monkCeremonyTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "07:00",
+    khaenMakCeremonyTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "09:00",
+    waterBlessingCeremonyTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "09:30",
+    dinnerReceptionTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "18:00"
 };
 
 export const config = writable<WeddingConfig>(defaultConfig);
