@@ -1,16 +1,56 @@
 <script lang="ts">
-  import { language } from "../lib/store";
+  import { language, config } from "../lib/store";
   import { translations } from "../lib/translations";
 
   function toggleLanguage() {
     $language = $language === "th" ? "en" : "th";
   }
+
+  const menuItems: Record<string, string> = {
+    Countdown: "home",
+    Schedule: "schedule",
+    Map: "map",
+    Gallery: "gallery",
+    Video: "video",
+    QRCode: "scan_qr",
+    RSVP: "rsvp",
+    Guestbook: "guestbook",
+  };
+
+  const defaultOrder = [
+    "Countdown",
+    "Schedule",
+    "Map",
+    "Gallery",
+    "Video",
+    "QRCode",
+    "RSVP",
+    "Guestbook",
+  ];
+
+  const sectionVisibility: Record<string, string> = {
+    Countdown: "showCountdown",
+    Schedule: "showSchedule",
+    Map: "showMap",
+    Gallery: "showGallery",
+    Video: "showVideo",
+    QRCode: "showQRCode",
+    RSVP: "showRSVP",
+    Guestbook: "showGuestbook",
+  };
+
+  function isSectionVisible(section: string) {
+    return ($config as any)[sectionVisibility[section]];
+  }
+
+  $: t = translations[$language];
+  $: sections = $config.sectionOrder || defaultOrder;
 </script>
 
 <div
   class="navbar bg-wedding-beige/90 backdrop-blur-sm fixed top-0 z-50 text-wedding-dark font-sans shadow-sm"
 >
-  <div class="flex-1">
+  <div class="navbar-start">
     <a
       href="/"
       class="btn btn-ghost text-xl font-serif tracking-widest uppercase"
@@ -18,7 +58,25 @@
       NA & AUT
     </a>
   </div>
-  <div class="flex-none">
+
+  <div class="navbar-center hidden lg:flex">
+    <ul class="menu menu-horizontal px-1">
+      {#each sections as section}
+        {#if menuItems[section] && isSectionVisible(section)}
+          <li>
+            <a
+              href="#{section.toLowerCase()}"
+              class="uppercase tracking-wider text-sm hover:text-wedding-green"
+            >
+              {t[menuItems[section]]}
+            </a>
+          </li>
+        {/if}
+      {/each}
+    </ul>
+  </div>
+
+  <div class="navbar-end gap-2">
     <button
       class="btn btn-ghost hover:bg-transparent"
       on:click={toggleLanguage}
@@ -33,5 +91,36 @@
         class:text-wedding-green={$language === "en"}>EN</span
       >
     </button>
+
+    <div class="dropdown dropdown-end lg:hidden">
+      <label tabindex="0" class="btn btn-ghost">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h8m-8 6h16"
+          />
+        </svg>
+      </label>
+      <ul
+        tabindex="0"
+        class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52"
+      >
+        {#each sections as section}
+          {#if menuItems[section] && isSectionVisible(section)}
+            <li>
+              <a href="#{section.toLowerCase()}">{t[menuItems[section]]}</a>
+            </li>
+          {/if}
+        {/each}
+      </ul>
+    </div>
   </div>
 </div>

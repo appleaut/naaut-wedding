@@ -33,20 +33,40 @@
 {#if $config.sectionOrder}
   {#each $config.sectionOrder as sectionName}
     {#if components[sectionName]}
-      <svelte:component this={components[sectionName]} />
+      <div id={sectionName.toLowerCase()}>
+        <svelte:component this={components[sectionName]} />
+      </div>
     {/if}
   {/each}
 {:else}
   <!-- Fallback if sectionOrder is missing -->
-  <Countdown />
-  <EventDetails />
-  <Schedule />
-  <Map />
-  <Gallery />
-  <Video />
-  <QRCode />
-  <RSVP />
-  <Guestbook />
+  <div id="countdown">
+    <Countdown />
+  </div>
+  <div id="eventdetails">
+    <EventDetails />
+  </div>
+  <div id="schedule">
+    <Schedule />
+  </div>
+  <div id="map">
+    <Map />
+  </div>
+  <div id="gallery">
+    <Gallery />
+  </div>
+  <div id="video">
+    <Video />
+  </div>
+  <div id="qrcode">
+    <QRCode />
+  </div>
+  <div id="rsvp">
+    <RSVP />
+  </div>
+  <div id="guestbook">
+    <Guestbook />
+  </div>
 {/if}
 
 <Footer />
