@@ -532,12 +532,11 @@
                             />
                         </div>
                         <div class="form-control">
-                            <label class="label" for="groomNickname"
-                                ><span class="label-text"
-                                    >{translations[$language]
-                                        .groom_nickname}</span
-                                ></label
-                            >
+                            <label class="label" for="groomNickname">
+                                <span class="label-text">
+                                    {translations[$language].groom_nickname}
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 id="groomNickname"
@@ -546,11 +545,11 @@
                             />
                         </div>
                         <div class="form-control">
-                            <label class="label" for="brideName"
-                                ><span class="label-text"
-                                    >{translations[$language].bride_name}</span
-                                ></label
-                            >
+                            <label class="label" for="brideName">
+                                <span class="label-text">
+                                    {translations[$language].bride_name}
+                                </span>
+                            </label>
                             <input
                                 type="text"
                                 id="brideName"
@@ -559,15 +558,14 @@
                             />
                         </div>
                         <div class="form-control">
-                            <label class="label" for="brideNickname"
-                                ><span class="label-text"
-                                    >{translations[$language]
-                                        .bride_nickname}</span
-                                ></label
-                            >
+                            <label class="label" for="input-brideNickname">
+                                <span class="label-text">
+                                    {translations[$language].bride_nickname}
+                                </span>
+                            </label>
                             <input
                                 type="text"
-                                id="brideNickname"
+                                id="input-brideNickname"
                                 bind:value={$config.brideNickname}
                                 class="input input-bordered"
                             />
@@ -646,7 +644,7 @@
                                 >
                                     {#each [0, 1, 2, 3, 4] as i}
                                         <div class="form-control">
-                                            <label
+                                            <div
                                                 class="label-text text-xs mb-1"
                                             >
                                                 {i === 0
@@ -666,7 +664,7 @@
                                                           : translations[
                                                                 $language
                                                             ].color_base}
-                                            </label>
+                                            </div>
                                             <div class="flex gap-2">
                                                 <input
                                                     type="color"
@@ -674,6 +672,7 @@
                                                     bind:value={
                                                         $config.customColors[i]
                                                     }
+                                                    aria-label="Color picker"
                                                 />
                                                 <input
                                                     type="text"
@@ -682,6 +681,7 @@
                                                         $config.customColors[i]
                                                     }
                                                     placeholder="#000000"
+                                                    aria-label="Color hex code"
                                                 />
                                             </div>
                                         </div>
@@ -699,12 +699,12 @@
                         </div>
                         {#if $config.dressCodeColors}
                             <div class="form-control md:col-span-2">
-                                <label class="label">
+                                <div class="label">
                                     <span class="label-text"
                                         >{translations[$language]
                                             .dress_code_colors}</span
                                     >
-                                </label>
+                                </div>
                                 <div
                                     class="grid grid-cols-1 sm:grid-cols-3 gap-4"
                                 >
@@ -719,6 +719,7 @@
                                                             i
                                                         ]
                                                     }
+                                                    aria-label="Dress code color picker"
                                                 />
                                                 <input
                                                     type="text"
@@ -729,6 +730,7 @@
                                                         ]
                                                     }
                                                     placeholder="#ffffff"
+                                                    aria-label="Dress code color hex code"
                                                 />
                                                 <button
                                                     class="btn btn-square btn-ghost btn-sm text-error"
