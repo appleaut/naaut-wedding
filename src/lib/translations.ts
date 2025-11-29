@@ -120,6 +120,9 @@ export const translations = {
         remove_schedule_item: "Remove",
         event_title: "Event Title",
         event_time: "Event Time",
+        unsaved_changes_confirm: "You have unsaved changes. Are you sure you want to leave?",
+        confirm: "Confirm",
+        cancel: "Cancel",
     },
     th: {
         home: "หน้าแรก",
@@ -242,6 +245,9 @@ export const translations = {
         remove_schedule_item: "ลบ",
         event_title: "ชื่อกิจกรรม",
         event_time: "เวลา",
+        unsaved_changes_confirm: "คุณมีการเปลี่ยนแปลงที่ยังไม่ได้บันทึก คุณแน่ใจหรือไม่ว่าต้องการออกจากหน้านี้?",
+        confirm: "ยืนยัน",
+        cancel: "ยกเลิก",
     }
 
 };

@@ -22,6 +22,44 @@
         $language = $language === "th" ? "en" : "th";
     }
 
+    let originalConfig = "";
+    $: hasUnsavedChanges =
+        activeTab === "config" &&
+        originalConfig !== "" &&
+        JSON.stringify($config) !== originalConfig;
+
+    function handleBeforeUnload(event: BeforeUnloadEvent) {
+        if (hasUnsavedChanges) {
+            event.preventDefault();
+            event.returnValue = "";
+            return "";
+        }
+    }
+
+    let showConfirmModal = false;
+    let onConfirm: () => void = () => {};
+
+    function triggerConfirm(callback: () => void) {
+        if (hasUnsavedChanges) {
+            onConfirm = callback;
+            showConfirmModal = true;
+        } else {
+            callback();
+        }
+    }
+
+    function handleConfirmAction() {
+        if (originalConfig) {
+            try {
+                config.set(JSON.parse(originalConfig));
+            } catch (e) {
+                console.error("Failed to revert config", e);
+            }
+        }
+        showConfirmModal = false;
+        onConfirm();
+    }
+
     async function fetchConfig() {
         try {
             const docRef = doc(db, "config", "main");
@@ -72,6 +110,7 @@
                 }
 
                 config.set(data as any);
+                originalConfig = JSON.stringify(data);
             }
         } catch (e) {
             console.error("Error loading config:", e);
@@ -79,9 +118,11 @@
     }
 
     async function refreshData() {
-        await fetchConfig();
-        await fetchRSVPs();
-        await fetchGuestbook();
+        triggerConfirm(async () => {
+            await fetchConfig();
+            await fetchRSVPs();
+            await fetchGuestbook();
+        });
     }
 
     onMount(() => {
@@ -100,6 +141,12 @@
     });
 
     let activeTab = "config"; // config, rsvp, guestbook
+
+    function switchTab(tab: string) {
+        triggerConfirm(() => {
+            activeTab = tab;
+        });
+    }
 
     try {
         if (typeof localStorage !== "undefined") {
@@ -151,7 +198,7 @@
     }
 
     function logout() {
-        push("/login");
+        triggerConfirm(() => push("/login"));
     }
 
     async function saveConfig() {
@@ -200,6 +247,7 @@
             }
 
             await setDoc(doc(db, "config", "main"), configToSave);
+            originalConfig = JSON.stringify($config);
             modalMessage = translations[$language].config_saved;
             modalType = "success";
             showModal = true;
@@ -334,6 +382,8 @@
         Guestbook: "showGuestbook",
     };
 </script>
+
+<svelte:window on:beforeunload={handleBeforeUnload} />
 
 <div class="drawer lg:drawer-open">
     <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
@@ -935,21 +985,21 @@
             <li>
                 <button
                     class:active={activeTab === "config"}
-                    on:click={() => (activeTab = "config")}
+                    on:click={() => switchTab("config")}
                     >{translations[$language].configuration}</button
                 >
             </li>
             <li>
                 <button
                     class:active={activeTab === "rsvp"}
-                    on:click={() => (activeTab = "rsvp")}
+                    on:click={() => switchTab("rsvp")}
                     >{translations[$language].rsvp_list}</button
                 >
             </li>
             <li>
                 <button
                     class:active={activeTab === "guestbook"}
-                    on:click={() => (activeTab = "guestbook")}
+                    on:click={() => switchTab("guestbook")}
                     >{translations[$language].guestbook}</button
                 >
             </li>
@@ -989,6 +1039,27 @@
         </div>
         <form method="dialog" class="modal-backdrop">
             <button on:click={closeModal}>close</button>
+        </form>
+    </dialog>
+{/if}
+
+{#if showConfirmModal}
+    <dialog class="modal modal-open">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg text-warning">
+                {translations[$language].unsaved_changes_confirm}
+            </h3>
+            <div class="modal-action">
+                <button class="btn" on:click={() => (showConfirmModal = false)}>
+                    {translations[$language].cancel}
+                </button>
+                <button class="btn btn-primary" on:click={handleConfirmAction}>
+                    {translations[$language].confirm}
+                </button>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button on:click={() => (showConfirmModal = false)}>close</button>
         </form>
     </dialog>
 {/if}
