@@ -1,0 +1,361 @@
+<script lang="ts">
+    import { config, language } from "../lib/store";
+    import { push } from "svelte-spa-router";
+    import { db, auth } from "../lib/firebase";
+    import {
+        collection,
+        getDocs,
+        doc,
+        setDoc,
+        getDoc,
+    } from "firebase/firestore";
+    import { onMount } from "svelte";
+    import { onAuthStateChanged } from "firebase/auth";
+
+    function toggleLanguage() {
+        $language = $language === "th" ? "en" : "th";
+    }
+
+    onMount(async () => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                push("/login");
+            }
+        });
+
+        // Load config from firestore
+        try {
+            const docRef = doc(db, "config", "main");
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                config.set(docSnap.data() as any);
+            }
+        } catch (e) {
+            console.error("Error loading config:", e);
+        }
+
+        fetchRSVPs();
+
+        return unsubscribe;
+    });
+
+    let activeTab = "config"; // config, rsvp, guestbook
+
+    let rsvps: any[] = [];
+
+    async function fetchRSVPs() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "rsvp"));
+            rsvps = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+        } catch (e) {
+            console.error("Error fetching RSVPs:", e);
+        }
+    }
+
+    // Mock Guestbook Data
+    let wishes = [
+        {
+            id: 1,
+            name: "Friend 1",
+            message: "Congrats!",
+            timestamp: new Date(),
+        },
+    ];
+
+    function logout() {
+        push("/login");
+    }
+
+    async function saveConfig() {
+        try {
+            await setDoc(doc(db, "config", "main"), $config);
+            alert("Configuration saved to Firestore!");
+        } catch (e: any) {
+            console.error("Error saving config:", e);
+            alert(`Error saving config: ${e.message}`);
+        }
+    }
+
+    function deleteWish(id: number) {
+        wishes = wishes.filter((w) => w.id !== id);
+    }
+
+    async function testConnection() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "rsvp"));
+            alert(
+                `Connection Successful! Found ${querySnapshot.size} RSVP entries.`,
+            );
+        } catch (e: any) {
+            console.error("Connection failed", e);
+            alert(`Connection Failed: ${e.message}`);
+        }
+    }
+</script>
+
+<div class="drawer lg:drawer-open">
+    <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content flex flex-col p-4">
+        <!-- Page content here -->
+        <div class="navbar bg-base-100 mb-4 shadow rounded-box">
+            <div class="flex-1">
+                <label
+                    for="my-drawer-2"
+                    class="btn btn-square btn-ghost lg:hidden"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        class="inline-block w-5 h-5 stroke-current"
+                        ><path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"
+                        ></path></svg
+                    >
+                </label>
+                <a href="/admin" class="btn btn-ghost text-xl">Dashboard</a>
+            </div>
+            <div class="flex-none gap-2">
+                <button class="btn btn-ghost" on:click={toggleLanguage}>
+                    <span
+                        class:font-bold={$language === "th"}
+                        class:text-primary={$language === "th"}>TH</span
+                    >
+                    <span class="mx-1">|</span>
+                    <span
+                        class:font-bold={$language === "en"}
+                        class:text-primary={$language === "en"}>EN</span
+                    >
+                </button>
+                <button class="btn btn-ghost" on:click={logout}>Logout</button>
+            </div>
+        </div>
+
+        {#if activeTab === "config"}
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Website Configuration</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label class="label" for="groomName"
+                                ><span class="label-text">Groom Name</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="groomName"
+                                bind:value={$config.groomName}
+                                class="input input-bordered"
+                            />
+                        </div>
+                        <div class="form-control">
+                            <label class="label" for="brideName"
+                                ><span class="label-text">Bride Name</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="brideName"
+                                bind:value={$config.brideName}
+                                class="input input-bordered"
+                            />
+                        </div>
+                        <div class="form-control">
+                            <label class="label" for="weddingDate"
+                                ><span class="label-text">Wedding Date</span
+                                ></label
+                            >
+                            <input
+                                type="datetime-local"
+                                id="weddingDate"
+                                bind:value={$config.weddingDate}
+                                class="input input-bordered"
+                            />
+                        </div>
+                        <div class="form-control">
+                            <label class="label" for="weddingLocation"
+                                ><span class="label-text">Location</span></label
+                            >
+                            <input
+                                type="text"
+                                id="weddingLocation"
+                                bind:value={$config.weddingLocation}
+                                class="input input-bordered"
+                            />
+                        </div>
+                        <div class="form-control">
+                            <label class="label" for="themeColor"
+                                ><span class="label-text">Theme</span></label
+                            >
+                            <select
+                                id="themeColor"
+                                bind:value={$config.themeColor}
+                                class="select select-bordered"
+                            >
+                                <option value="valentine">Valentine</option>
+                                <option value="luxury">Luxury</option>
+                                <option value="garden">Garden</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="divider">Toggles</div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Show Gallery</span>
+                            <input
+                                type="checkbox"
+                                bind:checked={$config.showGallery}
+                                class="toggle"
+                            />
+                        </label>
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Show RSVP</span>
+                            <input
+                                type="checkbox"
+                                bind:checked={$config.showRSVP}
+                                class="toggle"
+                            />
+                        </label>
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Show Map</span>
+                            <input
+                                type="checkbox"
+                                bind:checked={$config.showMap}
+                                class="toggle"
+                            />
+                        </label>
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Show Video</span>
+                            <input
+                                type="checkbox"
+                                bind:checked={$config.showVideo}
+                                class="toggle"
+                            />
+                        </label>
+                    </div>
+
+                    <div class="card-actions justify-end mt-4">
+                        <button class="btn btn-primary" on:click={saveConfig}
+                            >Save Changes</button
+                        >
+                    </div>
+                </div>
+            </div>
+        {:else if activeTab === "rsvp"}
+            <div class="overflow-x-auto bg-base-100 shadow-xl rounded-box">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Attendees</th>
+                            <th>Message</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each rsvps as rsvp}
+                            <tr>
+                                <td>{rsvp.name}</td>
+                                <td>
+                                    {#if rsvp.status === "attending"}
+                                        <div class="badge badge-success">
+                                            Attending
+                                        </div>
+                                    {:else}
+                                        <div class="badge badge-error">
+                                            Not Attending
+                                        </div>
+                                    {/if}
+                                </td>
+                                <td>{rsvp.attendees}</td>
+                                <td>{rsvp.message}</td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </div>
+        {:else if activeTab === "guestbook"}
+            <div class="grid gap-4">
+                {#each wishes as wish}
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold">{wish.name}</h3>
+                                    <p>{wish.message}</p>
+                                    <p class="text-xs opacity-50">
+                                        {wish.timestamp.toLocaleDateString()}
+                                    </p>
+                                </div>
+                                <button
+                                    class="btn btn-square btn-sm btn-error"
+                                    on:click={() => deleteWish(wish.id)}
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="h-6 w-6"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        ><path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"
+                                        /></svg
+                                    >
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {/each}
+            </div>
+        {/if}
+    </div>
+    <div class="drawer-side">
+        <label
+            for="my-drawer-2"
+            aria-label="close sidebar"
+            class="drawer-overlay"
+        ></label>
+        <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+            <!-- Sidebar content here -->
+            <li class="mb-4 text-xl font-bold px-4">Admin Panel</li>
+            <li>
+                <button
+                    class:active={activeTab === "config"}
+                    on:click={() => (activeTab = "config")}
+                    >Configuration</button
+                >
+            </li>
+            <li>
+                <button
+                    class:active={activeTab === "rsvp"}
+                    on:click={() => (activeTab = "rsvp")}>RSVP List</button
+                >
+            </li>
+            <li>
+                <button
+                    class:active={activeTab === "guestbook"}
+                    on:click={() => (activeTab = "guestbook")}>Guestbook</button
+                >
+            </li>
+            <div class="divider"></div>
+            <li>
+                <button on:click={testConnection}
+                    >Test Firebase Connection</button
+                >
+            </li>
+            <li><a href="/">View Site</a></li>
+        </ul>
+    </div>
+</div>
