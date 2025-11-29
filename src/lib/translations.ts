@@ -113,6 +113,9 @@ export const translations = {
         thank_you_celebrating: "Thank you for celebrating with us",
         all_rights_reserved: "All rights reserved",
         swipe_to_see_more: "Swipe to see more",
+        section_order: "Section Order",
+        move_up: "Move Up",
+        move_down: "Move Down",
     },
     th: {
         home: "หน้าแรก",
@@ -228,6 +231,9 @@ export const translations = {
         thank_you_celebrating: "ขอบคุณที่มาร่วมฉลองกับเรา",
         all_rights_reserved: "สงวนลิขสิทธิ์",
         swipe_to_see_more: "เลื่อนเพื่อดูเพิ่มเติม",
+        section_order: "ลำดับการแสดงผล",
+        move_up: "เลื่อนขึ้น",
+        move_down: "เลื่อนลง",
     }
 };
 

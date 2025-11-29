@@ -12,18 +12,42 @@
   import QRCode from "../components/QRCode.svelte";
   import MusicPlayer from "../components/MusicPlayer.svelte";
   import Footer from "../components/Footer.svelte";
+  import { config } from "../lib/store";
+
+  const components: Record<string, any> = {
+    Countdown,
+    EventDetails,
+    Schedule,
+    Map,
+    Gallery,
+    Video,
+    QRCode,
+    RSVP,
+    Guestbook,
+  };
 </script>
 
 <Navbar />
 <Hero />
-<Countdown />
-<EventDetails />
-<Schedule />
-<Map />
-<Gallery />
-<Video />
-<QRCode />
-<RSVP />
-<Guestbook />
+
+{#if $config.sectionOrder}
+  {#each $config.sectionOrder as sectionName}
+    {#if components[sectionName]}
+      <svelte:component this={components[sectionName]} />
+    {/if}
+  {/each}
+{:else}
+  <!-- Fallback if sectionOrder is missing -->
+  <Countdown />
+  <EventDetails />
+  <Schedule />
+  <Map />
+  <Gallery />
+  <Video />
+  <QRCode />
+  <RSVP />
+  <Guestbook />
+{/if}
+
 <Footer />
 <MusicPlayer />

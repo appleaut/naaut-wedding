@@ -59,6 +59,20 @@
                         data.dinnerReceptionTime,
                     );
 
+                if (!data.sectionOrder) {
+                    data.sectionOrder = [
+                        "Countdown",
+                        "EventDetails",
+                        "Schedule",
+                        "Map",
+                        "Gallery",
+                        "Video",
+                        "QRCode",
+                        "RSVP",
+                        "Guestbook",
+                    ];
+                }
+
                 config.set(data as any);
             }
         } catch (e) {
@@ -288,6 +302,25 @@
                 fp.destroy();
             },
         };
+    }
+    function moveSection(index: number, direction: "up" | "down") {
+        const newOrder = [...$config.sectionOrder];
+        if (direction === "up") {
+            if (index > 0) {
+                [newOrder[index - 1], newOrder[index]] = [
+                    newOrder[index],
+                    newOrder[index - 1],
+                ];
+            }
+        } else {
+            if (index < newOrder.length - 1) {
+                [newOrder[index + 1], newOrder[index]] = [
+                    newOrder[index],
+                    newOrder[index + 1],
+                ];
+            }
+        }
+        $config.sectionOrder = newOrder;
     }
 </script>
 
@@ -770,6 +803,72 @@
                                     class="toggle toggle-primary"
                                 />
                             </label>
+                        </div>
+                    </div>
+
+                    <div class="divider">
+                        {translations[$language].section_order}
+                    </div>
+                    <div class="card bg-base-100 border">
+                        <div class="card-body p-4">
+                            {#if $config.sectionOrder}
+                                {#each $config.sectionOrder as section, index}
+                                    <div
+                                        class="flex items-center justify-between p-2 bg-base-200 rounded mb-2"
+                                    >
+                                        <span class="font-medium"
+                                            >{section}</span
+                                        >
+                                        <div class="flex gap-2">
+                                            <button
+                                                class="btn btn-sm btn-square btn-ghost"
+                                                disabled={index === 0}
+                                                on:click={() =>
+                                                    moveSection(index, "up")}
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke-width="1.5"
+                                                    stroke="currentColor"
+                                                    class="w-5 h-5"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                                                    />
+                                                </svg>
+                                            </button>
+                                            <button
+                                                class="btn btn-sm btn-square btn-ghost"
+                                                disabled={index ===
+                                                    $config.sectionOrder
+                                                        .length -
+                                                        1}
+                                                on:click={() =>
+                                                    moveSection(index, "down")}
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke-width="1.5"
+                                                    stroke="currentColor"
+                                                    class="w-5 h-5"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                {/each}
+                            {/if}
                         </div>
                     </div>
 

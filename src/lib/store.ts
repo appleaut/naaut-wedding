@@ -30,6 +30,7 @@ export interface WeddingConfig {
     khaenMakCeremonyTime: string;
     waterBlessingCeremonyTime: string;
     dinnerReceptionTime: string;
+    sectionOrder: string[];
 }
 
 const defaultConfig: WeddingConfig = {
@@ -61,7 +62,18 @@ const defaultConfig: WeddingConfig = {
     monkCeremonyTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "07:00",
     khaenMakCeremonyTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "09:00",
     waterBlessingCeremonyTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "09:30",
-    dinnerReceptionTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "18:00"
+    dinnerReceptionTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 11) + "18:00",
+    sectionOrder: [
+        "Countdown",
+        "EventDetails",
+        "Schedule",
+        "Map",
+        "Gallery",
+        "Video",
+        "QRCode",
+        "RSVP",
+        "Guestbook"
+    ]
 };
 
 export const config = writable<WeddingConfig>(defaultConfig);
