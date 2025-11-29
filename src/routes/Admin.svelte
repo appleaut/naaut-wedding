@@ -655,7 +655,10 @@
                 </div>
             </div>
         {:else if activeTab === "rsvp"}
-            <div class="overflow-x-auto bg-base-100 shadow-xl rounded-box">
+            <!-- Desktop View -->
+            <div
+                class="hidden md:block overflow-x-auto bg-base-100 shadow-xl rounded-box"
+            >
                 <table class="table">
                     <thead>
                         <tr>
@@ -691,6 +694,61 @@
                         {/each}
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Mobile View -->
+            <div class="grid grid-cols-1 gap-4 md:hidden">
+                {#each rsvps as rsvp}
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body p-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="font-bold text-lg">{rsvp.name}</h3>
+                                {#if rsvp.status === "attending"}
+                                    <div
+                                        class="badge badge-success whitespace-nowrap"
+                                    >
+                                        {translations[$language].attending}
+                                    </div>
+                                {:else if rsvp.status === "not-sure"}
+                                    <div
+                                        class="badge badge-warning whitespace-nowrap"
+                                    >
+                                        {translations[$language].not_sure}
+                                    </div>
+                                {:else}
+                                    <div
+                                        class="badge badge-error whitespace-nowrap"
+                                    >
+                                        {translations[$language].not_attending}
+                                    </div>
+                                {/if}
+                            </div>
+
+                            <div
+                                class="flex justify-between items-center py-2 border-b border-base-200"
+                            >
+                                <span class="opacity-70"
+                                    >{translations[$language].attendees}</span
+                                >
+                                <span class="font-medium">{rsvp.attendees}</span
+                                >
+                            </div>
+
+                            {#if rsvp.message}
+                                <div class="mt-3">
+                                    <span class="opacity-70 text-sm block mb-1"
+                                        >{translations[$language].message}</span
+                                    >
+                                    <div
+                                        class="bg-base-200 p-3 rounded-lg text-sm"
+                                    >
+                                        {rsvp.message}
+                                    </div>
+                                </div>
+                            {/if}
+                        </div>
+                    </div>
+                {/each}
             </div>
         {:else if activeTab === "guestbook"}
             <div class="grid gap-4">
