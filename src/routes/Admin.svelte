@@ -14,7 +14,7 @@
         orderBy,
     } from "firebase/firestore";
     import { onMount } from "svelte";
-    import { onAuthStateChanged } from "firebase/auth";
+    import { onAuthStateChanged, signOut } from "firebase/auth";
     import flatpickr from "flatpickr";
     import "flatpickr/dist/flatpickr.css";
 
@@ -198,7 +198,13 @@
     }
 
     function logout() {
-        triggerConfirm(() => push("/login"));
+        triggerConfirm(async () => {
+            try {
+                await signOut(auth);
+            } catch (e) {
+                console.error("Logout error:", e);
+            }
+        });
     }
 
     async function saveConfig() {
@@ -370,7 +376,18 @@
         $config.schedule = $config.schedule.filter((_, i) => i !== index);
     }
 
-    const sectionConfigMap: Record<string, keyof WeddingConfig> = {
+    const sectionConfigMap: Record<
+        string,
+        | "showCountdown"
+        | "showEventDetails"
+        | "showSchedule"
+        | "showMap"
+        | "showGallery"
+        | "showVideo"
+        | "showQRCode"
+        | "showRSVP"
+        | "showGuestbook"
+    > = {
         Countdown: "showCountdown",
         EventDetails: "showEventDetails",
         Schedule: "showSchedule",
