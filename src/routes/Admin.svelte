@@ -14,7 +14,7 @@
         orderBy,
     } from "firebase/firestore";
     import { onMount } from "svelte";
-    import { onAuthStateChanged, signOut } from "firebase/auth";
+    import { onAuthStateChanged, signOut, updatePassword } from "firebase/auth";
     import flatpickr from "flatpickr";
     import "flatpickr/dist/flatpickr.css";
 
@@ -140,11 +140,18 @@
         return unsubscribe;
     });
 
-    let activeTab = "config"; // config, rsvp, guestbook
+    let activeTab = "config"; // config, rsvp, guestbook, change-password
+
+    let newPassword = "";
+    let confirmNewPassword = "";
 
     function switchTab(tab: string) {
         triggerConfirm(() => {
             activeTab = tab;
+            if (tab === "change-password") {
+                newPassword = "";
+                confirmNewPassword = "";
+            }
         });
     }
 
@@ -285,6 +292,29 @@
         } catch (e: any) {
             console.error("Connection failed", e);
             modalMessage = `${translations[$language].connection_failed} ${e.message}`;
+            modalType = "error";
+            showModal = true;
+        }
+    }
+
+    async function handleChangePassword() {
+        if (!auth.currentUser) return;
+        if (newPassword !== confirmNewPassword) {
+            modalMessage = translations[$language].password_mismatch;
+            modalType = "error";
+            showModal = true;
+            return;
+        }
+        try {
+            await updatePassword(auth.currentUser, newPassword);
+            modalMessage = translations[$language].password_updated;
+            modalType = "success";
+            showModal = true;
+            newPassword = "";
+            confirmNewPassword = "";
+        } catch (e: any) {
+            console.error("Error updating password:", e);
+            modalMessage = `${translations[$language].update_error}: ${e.message}`;
             modalType = "error";
             showModal = true;
         }
@@ -986,6 +1016,49 @@
                     </div>
                 {/each}
             </div>
+        {:else if activeTab === "change-password"}
+            <div class="card bg-base-100 shadow-xl max-w-md mx-auto">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        {translations[$language].change_password}
+                    </h2>
+                    <div class="form-control">
+                        <label class="label" for="newPassword">
+                            <span class="label-text"
+                                >{translations[$language].new_password}</span
+                            >
+                        </label>
+                        <input
+                            type="password"
+                            id="newPassword"
+                            bind:value={newPassword}
+                            class="input input-bordered"
+                        />
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="confirmPassword">
+                            <span class="label-text"
+                                >{translations[$language]
+                                    .confirm_password}</span
+                            >
+                        </label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            bind:value={confirmNewPassword}
+                            class="input input-bordered"
+                        />
+                    </div>
+                    <div class="card-actions justify-end mt-4">
+                        <button
+                            class="btn btn-primary"
+                            on:click={handleChangePassword}
+                        >
+                            {translations[$language].update_password}
+                        </button>
+                    </div>
+                </div>
+            </div>
         {/if}
     </div>
     <div class="drawer-side">
@@ -1018,6 +1091,15 @@
                     class:active={activeTab === "guestbook"}
                     on:click={() => switchTab("guestbook")}
                     >{translations[$language].guestbook}</button
+                >
+            </li>
+            <div class="divider"></div>
+
+            <li>
+                <button
+                    class:active={activeTab === "change-password"}
+                    on:click={() => switchTab("change-password")}
+                    >{translations[$language].change_password}</button
                 >
             </li>
             <div class="divider"></div>
