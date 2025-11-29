@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { config } from "../lib/store";
+    import { config, language } from "../lib/store";
+    import { translations } from "../lib/translations";
 
     function getEmbedUrl(url: string) {
         if (!url) return "";
@@ -20,7 +21,9 @@
 {#if $config.showVideo && $config.videoUrl}
     <div class="py-10 bg-base-100">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-8">Our Story</h2>
+            <h2 class="text-3xl font-bold mb-8">
+                {translations[$language].our_story}
+            </h2>
             <div class="w-full max-w-4xl mx-auto aspect-video">
                 <iframe
                     class="w-full h-full rounded-box shadow-xl"
