@@ -15,6 +15,8 @@
     } from "firebase/firestore";
     import { onMount } from "svelte";
     import { onAuthStateChanged } from "firebase/auth";
+    import flatpickr from "flatpickr";
+    import "flatpickr/dist/flatpickr.css";
 
     function toggleLanguage() {
         $language = $language === "th" ? "en" : "th";
@@ -27,13 +29,13 @@
             if (docSnap.exists()) {
                 const data = docSnap.data();
 
-                // Helper to format date for datetime-local input (YYYY-MM-DDThh:mm)
+                // Helper to format date for text input (DD/MM/YYYY HH:mm)
                 const formatDate = (dateStr: string) => {
                     if (!dateStr) return "";
                     const d = new Date(dateStr);
                     if (isNaN(d.getTime())) return dateStr;
                     const pad = (n: number) => n.toString().padStart(2, "0");
-                    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+                    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
                 };
 
                 if (data.weddingDate)
@@ -118,10 +120,26 @@
     async function saveConfig() {
         try {
             const configToSave = { ...$config };
-
-            // Convert local date strings back to ISO strings for storage
+            // Convert local date strings (DD/MM/YYYY HH:mm) back to ISO strings for storage
             const toISO = (dateStr: string) => {
                 if (!dateStr) return "";
+
+                // Try parsing DD/MM/YYYY HH:mm
+                const parts = dateStr.match(
+                    /^(\d{1,2})\/(\d{1,2})\/(\d{4}) (\d{1,2}):(\d{1,2})$/,
+                );
+                if (parts) {
+                    const [_, day, month, year, hour, minute] = parts;
+                    const d = new Date(
+                        parseInt(year),
+                        parseInt(month) - 1,
+                        parseInt(day),
+                        parseInt(hour),
+                        parseInt(minute),
+                    );
+                    return isNaN(d.getTime()) ? dateStr : d.toISOString();
+                }
+
                 const d = new Date(dateStr);
                 return isNaN(d.getTime()) ? dateStr : d.toISOString();
             };
@@ -178,6 +196,31 @@
 
     function closeModal() {
         showModal = false;
+    }
+
+    function datePicker(node: HTMLInputElement, value: string) {
+        const fp = flatpickr(node, {
+            enableTime: true,
+            dateFormat: "d/m/Y H:i",
+            time_24hr: true,
+            allowInput: true,
+            defaultDate: value,
+            onChange: (selectedDates, dateStr) => {
+                node.value = dateStr;
+                node.dispatchEvent(new Event("input"));
+            },
+        });
+
+        return {
+            update(newValue: string) {
+                if (newValue) {
+                    fp.setDate(newValue, false, "d/m/Y H:i");
+                }
+            },
+            destroy() {
+                fp.destroy();
+            },
+        };
     }
 </script>
 
@@ -296,10 +339,12 @@
                                 ></label
                             >
                             <input
-                                type="datetime-local"
+                                type="text"
                                 id="weddingDate"
                                 bind:value={$config.weddingDate}
+                                use:datePicker={$config.weddingDate}
                                 class="input input-bordered"
+                                placeholder="DD/MM/YYYY HH:mm"
                             />
                         </div>
                         <div class="form-control">
@@ -379,10 +424,12 @@
                                 ></label
                             >
                             <input
-                                type="datetime-local"
+                                type="text"
                                 id="qrCodeStartTime"
                                 bind:value={$config.qrCodeStartTime}
+                                use:datePicker={$config.qrCodeStartTime}
                                 class="input input-bordered"
+                                placeholder="DD/MM/YYYY HH:mm"
                             />
                         </div>
                         <div class="form-control">
@@ -392,10 +439,12 @@
                                 ></label
                             >
                             <input
-                                type="datetime-local"
+                                type="text"
                                 id="qrCodeEndTime"
                                 bind:value={$config.qrCodeEndTime}
+                                use:datePicker={$config.qrCodeEndTime}
                                 class="input input-bordered"
+                                placeholder="DD/MM/YYYY HH:mm"
                             />
                         </div>
                     </div>
@@ -609,7 +658,7 @@
                         {#each rsvps as rsvp}
                             <tr>
                                 <td>{rsvp.name}</td>
-                                <td>
+                                <td class="whitespace-nowrap">
                                     {#if rsvp.status === "attending"}
                                         <div class="badge badge-success">
                                             {translations[$language].attending}
