@@ -484,6 +484,10 @@
                                         <div class="badge badge-success">
                                             Attending
                                         </div>
+                                    {:else if rsvp.status === "not-sure"}
+                                        <div class="badge badge-warning">
+                                            Not Sure
+                                        </div>
                                     {:else}
                                         <div class="badge badge-error">
                                             Not Attending

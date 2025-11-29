@@ -23,6 +23,7 @@ export const translations = {
         submit: "Submit",
         attending: "Attending",
         not_attending: "Not Attending",
+        not_sure: "Not Sure",
         number_of_guests: "Number of Guests",
         phone: "Phone Number",
         thank_you: "Thank You",
@@ -47,6 +48,8 @@ export const translations = {
         response_recorded: "Your response has been recorded.",
         submit_another: "Submit another",
         will_you_attend: "Will you attend?",
+        open_in_google_maps: "Open in Google Maps",
+        wedding_location_map: "Wedding Location Map",
     },
     th: {
         home: "หน้าแรก",
@@ -72,7 +75,8 @@ export const translations = {
         submit: "ส่งข้อมูล",
         attending: "เข้าร่วมงาน",
         not_attending: "ไม่สามารถเข้าร่วมได้",
-        number_of_guests: "จำนวนผู้ติดตาม",
+        not_sure: "ไม่แน่ใจ",
+        number_of_guests: "จำนวน (คน)",
         phone: "เบอร์โทรศัพท์",
         thank_you: "ขอบคุณ",
         video: "วิดีโอ",
@@ -95,7 +99,9 @@ export const translations = {
         countdown_title: "นับถอยหลังสู่วันวิวาห์",
         response_recorded: "บันทึกข้อมูลเรียบร้อยแล้ว",
         submit_another: "ส่งข้อมูลเพิ่มเติม",
-        will_you_attend: "คุณจะมาร่วมงานหรือไม่?",
+        will_you_attend: "กรุณาแจ้งการตอบรับเข้าร่วมงาน",
+        open_in_google_maps: "เปิดใน Google Maps",
+        wedding_location_map: "แผนที่สถานที่จัดงานแต่งงาน",
     }
 };
 

@@ -1,11 +1,14 @@
 <script lang="ts">
-    import { config } from "../lib/store";
+    import { config, language } from "../lib/store";
+    import { translations } from "../lib/translations";
 </script>
 
 {#if $config.showMap}
     <div id="map" class="py-10 bg-base-100">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-6">Location</h2>
+            <h2 class="text-3xl font-bold text-center mb-6">
+                {translations[$language].location}
+            </h2>
             <div
                 class="w-full h-96 rounded-box shadow-xl bg-base-200 overflow-hidden"
             >
@@ -17,7 +20,7 @@
                     allowfullscreen={true}
                     loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"
-                    title="Wedding Location Map"
+                    title={translations[$language].wedding_location_map}
                 ></iframe>
             </div>
             <div class="text-center mt-4">
@@ -26,7 +29,7 @@
                     target="_blank"
                     class="btn btn-outline btn-primary"
                 >
-                    Open in Google Maps
+                    {translations[$language].open_in_google_maps}
                 </a>
             </div>
         </div>

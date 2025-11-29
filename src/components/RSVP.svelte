@@ -16,7 +16,8 @@
     try {
       await addDoc(collection(db, "rsvp"), {
         name,
-        attendees: status === "attending" ? attendees : 0,
+        attendees:
+          status === "attending" ? attendees : status === "not-sure" ? 1 : 0,
         message,
         status,
         timestamp: new Date(),
@@ -95,6 +96,9 @@
                 >
                 <option value="not-attending"
                   >{translations[$language].not_attending}</option
+                >
+                <option value="not-sure"
+                  >{translations[$language].not_sure}</option
                 >
               </select>
             </div>
