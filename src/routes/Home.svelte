@@ -3,6 +3,7 @@
   import Hero from "../components/Hero.svelte";
   import Countdown from "../components/Countdown.svelte";
   import EventDetails from "../components/EventDetails.svelte";
+  import Schedule from "../components/Schedule.svelte";
   import Map from "../components/Map.svelte";
   import RSVP from "../components/RSVP.svelte";
   import Guestbook from "../components/Guestbook.svelte";
@@ -17,6 +18,7 @@
 <Hero />
 <Countdown />
 <EventDetails />
+<Schedule />
 <Map />
 <Gallery />
 <Video />

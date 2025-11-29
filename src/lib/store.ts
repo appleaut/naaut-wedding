@@ -26,6 +26,10 @@ export interface WeddingConfig {
         accountName: string;
         accountNumber: string;
     };
+    monkCeremonyTime: string;
+    khaenMakCeremonyTime: string;
+    waterBlessingCeremonyTime: string;
+    dinnerReceptionTime: string;
 }
 
 const defaultConfig: WeddingConfig = {
@@ -53,7 +57,11 @@ const defaultConfig: WeddingConfig = {
         bankName: "Bank",
         accountName: "Name",
         accountNumber: "123-456-7890"
-    }
+    },
+    monkCeremonyTime: "07:00",
+    khaenMakCeremonyTime: "09:00",
+    waterBlessingCeremonyTime: "09:30",
+    dinnerReceptionTime: "18:00"
 };
 
 export const config = writable<WeddingConfig>(defaultConfig);

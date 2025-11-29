@@ -233,6 +233,31 @@
             },
         };
     }
+    function timePicker(node: HTMLInputElement, value: string) {
+        const fp = flatpickr(node, {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            allowInput: true,
+            defaultDate: value,
+            onChange: (selectedDates, dateStr) => {
+                node.value = dateStr;
+                node.dispatchEvent(new Event("input"));
+            },
+        });
+
+        return {
+            update(newValue: string) {
+                if (newValue) {
+                    fp.setDate(newValue, false, "H:i");
+                }
+            },
+            destroy() {
+                fp.destroy();
+            },
+        };
+    }
 </script>
 
 <div class="drawer lg:drawer-open">
@@ -456,6 +481,76 @@
                                 use:datePicker={$config.qrCodeEndTime}
                                 class="input input-bordered"
                                 placeholder="DD/MM/YYYY HH:mm"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="divider">
+                        {translations[$language].schedule_settings}
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label class="label" for="monkCeremonyTime"
+                                ><span class="label-text"
+                                    >{translations[$language]
+                                        .monk_ceremony}</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="monkCeremonyTime"
+                                bind:value={$config.monkCeremonyTime}
+                                use:timePicker={$config.monkCeremonyTime}
+                                class="input input-bordered"
+                                placeholder="HH:mm"
+                            />
+                        </div>
+                        <div class="form-control">
+                            <label class="label" for="khaenMakCeremonyTime"
+                                ><span class="label-text"
+                                    >{translations[$language]
+                                        .khaen_mak_procession}</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="khaenMakCeremonyTime"
+                                bind:value={$config.khaenMakCeremonyTime}
+                                use:timePicker={$config.khaenMakCeremonyTime}
+                                class="input input-bordered"
+                                placeholder="HH:mm"
+                            />
+                        </div>
+                        <div class="form-control">
+                            <label class="label" for="waterBlessingCeremonyTime"
+                                ><span class="label-text"
+                                    >{translations[$language]
+                                        .water_blessing}</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="waterBlessingCeremonyTime"
+                                bind:value={$config.waterBlessingCeremonyTime}
+                                use:timePicker={$config.waterBlessingCeremonyTime}
+                                class="input input-bordered"
+                                placeholder="HH:mm"
+                            />
+                        </div>
+                        <div class="form-control">
+                            <label class="label" for="dinnerReceptionTime"
+                                ><span class="label-text"
+                                    >{translations[$language]
+                                        .dinner_reception}</span
+                                ></label
+                            >
+                            <input
+                                type="text"
+                                id="dinnerReceptionTime"
+                                bind:value={$config.dinnerReceptionTime}
+                                use:timePicker={$config.dinnerReceptionTime}
+                                class="input input-bordered"
+                                placeholder="HH:mm"
                             />
                         </div>
                     </div>
