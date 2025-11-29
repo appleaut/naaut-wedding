@@ -75,6 +75,17 @@
 
     let activeTab = "config"; // config, rsvp, guestbook
 
+    try {
+        if (typeof localStorage !== "undefined") {
+            const saved = localStorage.getItem("adminActiveTab");
+            if (saved) activeTab = saved;
+        }
+    } catch (e) {}
+
+    $: if (typeof localStorage !== "undefined") {
+        localStorage.setItem("adminActiveTab", activeTab);
+    }
+
     let rsvps: any[] = [];
 
     async function fetchRSVPs() {
