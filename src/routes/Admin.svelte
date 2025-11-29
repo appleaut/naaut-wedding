@@ -109,6 +109,19 @@
                     data.showEventDetails = true;
                 }
 
+                if (!data.customColors || !Array.isArray(data.customColors)) {
+                    data.customColors = [
+                        "#570df8",
+                        "#f000b8",
+                        "#37cdbe",
+                        "#3d4451",
+                        "#ffffff",
+                    ];
+                }
+                while (data.customColors.length < 5) {
+                    data.customColors.push("#000000");
+                }
+
                 config.set(data as any);
                 originalConfig = JSON.stringify(data);
             }
@@ -432,7 +445,7 @@
 
 <svelte:window on:beforeunload={handleBeforeUnload} />
 
-<div class="drawer lg:drawer-open">
+<div class="drawer lg:drawer-open" data-theme="valentine">
     <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col p-4">
         <!-- Page content here -->
@@ -591,8 +604,75 @@
                                     >{translations[$language]
                                         .theme_garden}</option
                                 >
+                                <option value="custom"
+                                    >{translations[$language]
+                                        .theme_custom}</option
+                                >
                             </select>
                         </div>
+
+                        {#if $config.themeColor === "custom"}
+                            <div
+                                class="form-control md:col-span-2 bg-base-200 p-4 rounded-box"
+                            >
+                                <label class="label pt-0">
+                                    <span class="label-text font-bold"
+                                        >{translations[$language]
+                                            .custom_colors}</span
+                                    >
+                                </label>
+                                <div
+                                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4"
+                                >
+                                    {#each [0, 1, 2, 3, 4] as i}
+                                        <div class="form-control">
+                                            <label
+                                                class="label-text text-xs mb-1"
+                                            >
+                                                {i === 0
+                                                    ? translations[$language]
+                                                          .color_primary
+                                                    : i === 1
+                                                      ? translations[$language]
+                                                            .color_secondary
+                                                      : i === 2
+                                                        ? translations[
+                                                              $language
+                                                          ].color_accent
+                                                        : i === 3
+                                                          ? translations[
+                                                                $language
+                                                            ].color_neutral
+                                                          : translations[
+                                                                $language
+                                                            ].color_base}
+                                            </label>
+                                            <div class="flex gap-2">
+                                                <input
+                                                    type="color"
+                                                    class="input input-bordered p-0 w-10 h-10 shrink-0 cursor-pointer rounded-full overflow-hidden [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded-full [&::-moz-color-swatch]:border-none [&::-moz-color-swatch]:rounded-full"
+                                                    bind:value={
+                                                        $config.customColors[i]
+                                                    }
+                                                />
+                                                <input
+                                                    type="text"
+                                                    class="input input-bordered w-full text-sm px-2 min-w-0"
+                                                    bind:value={
+                                                        $config.customColors[i]
+                                                    }
+                                                    placeholder="#000000"
+                                                />
+                                            </div>
+                                        </div>
+                                    {/each}
+                                </div>
+                                <div class="text-xs text-base-content/60 mt-2">
+                                    Enter Hex codes (e.g. #0C143B) or use the
+                                    color picker.
+                                </div>
+                            </div>
+                        {/if}
                         <div class="form-control">
                             <label class="label" for="videoUrl"
                                 ><span class="label-text"
@@ -1205,7 +1285,7 @@
 </div>
 
 {#if showModal}
-    <dialog class="modal modal-open">
+    <dialog class="modal modal-open" data-theme="valentine">
         <div class="modal-box">
             <h3
                 class="font-bold text-lg"
@@ -1230,7 +1310,7 @@
 {/if}
 
 {#if showConfirmModal}
-    <dialog class="modal modal-open">
+    <dialog class="modal modal-open" data-theme="valentine">
         <div class="modal-box">
             <h3 class="font-bold text-lg text-warning">
                 {translations[$language].unsaved_changes_confirm}

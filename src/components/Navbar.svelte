@@ -1,6 +1,7 @@
 <script lang="ts">
   import { language, config } from "../lib/store";
   import { translations } from "../lib/translations";
+  import QRCode from "./QRCode.svelte";
 
   function toggleLanguage() {
     $language = $language === "th" ? "en" : "th";
@@ -12,13 +13,13 @@
     Map: "map",
     Gallery: "gallery",
     Video: "video",
-    QRCode: "scan_qr",
     RSVP: "rsvp",
-    Guestbook: "guestbook",
+    QRCode: "guestbook",
   };
 
   const defaultOrder = [
     "Countdown",
+    "EventDetails",
     "Schedule",
     "Map",
     "Gallery",
@@ -30,6 +31,7 @@
 
   const sectionVisibility: Record<string, string> = {
     Countdown: "showCountdown",
+    EventDetails: "showEventDetails",
     Schedule: "showSchedule",
     Map: "showMap",
     Gallery: "showGallery",
