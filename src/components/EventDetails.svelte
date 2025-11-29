@@ -64,9 +64,12 @@
           <p class="text-lg">
             {format(new Date($config.weddingDate), "HH:mm")}
           </p>
-          <p class="text-sm opacity-60 uppercase tracking-widest mt-1">
+          <a
+            href="#schedule"
+            class="text-sm opacity-60 uppercase tracking-widest mt-1 underline hover:text-wedding-green"
+          >
             {translations[$language].ceremony}
-          </p>
+          </a>
         </div>
 
         <div class="flex flex-col items-center p-8 border border-wedding-beige">

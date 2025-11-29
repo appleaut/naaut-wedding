@@ -27,7 +27,7 @@
 </script>
 
 {#if $config.showSchedule}
-    <div class="py-20 bg-base-200 text-base-content font-sans">
+    <div id="schedule" class="py-20 bg-base-200 text-base-content font-sans">
         <div class="container mx-auto px-4">
             <h2
                 class="text-3xl md:text-4xl font-serif text-center mb-12 text-primary"
