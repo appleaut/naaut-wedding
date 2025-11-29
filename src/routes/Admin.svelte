@@ -1,5 +1,6 @@
 <script lang="ts">
     import { config, language } from "../lib/store";
+    import { translations } from "../lib/translations";
     import { push } from "svelte-spa-router";
     import { db, auth } from "../lib/firebase";
     import {
@@ -135,21 +136,21 @@
                 configToSave.qrCodeEndTime = toISO(configToSave.qrCodeEndTime);
 
             await setDoc(doc(db, "config", "main"), configToSave);
-            alert("Configuration saved to Firestore!");
+            alert(translations[$language].config_saved);
         } catch (e: any) {
             console.error("Error saving config:", e);
-            alert(`Error saving config: ${e.message}`);
+            alert(`${translations[$language].config_save_error} ${e.message}`);
         }
     }
 
     async function deleteWish(id: string) {
-        if (!confirm("Are you sure you want to delete this wish?")) return;
+        if (!confirm(translations[$language].delete_confirm)) return;
         try {
             await deleteDoc(doc(db, "guestbook", id));
             await fetchGuestbook();
         } catch (e) {
             console.error("Error deleting wish:", e);
-            alert("Failed to delete wish.");
+            alert(translations[$language].delete_error);
         }
     }
 
@@ -157,11 +158,11 @@
         try {
             const querySnapshot = await getDocs(collection(db, "config"));
             alert(
-                `Connection Successful! Found ${querySnapshot.size} config entries.`,
+                `${translations[$language].connection_success} ${querySnapshot.size}`,
             );
         } catch (e: any) {
             console.error("Connection failed", e);
-            alert(`Connection Failed: ${e.message}`);
+            alert(`${translations[$language].connection_failed} ${e.message}`);
         }
     }
 </script>
@@ -190,7 +191,7 @@
                     >
                 </label>
                 <button class="btn btn-ghost text-xl" on:click={refreshData}
-                    >Refresh</button
+                    >{translations[$language].refresh}</button
                 >
             </div>
             <div class="flex-none gap-2">
@@ -205,19 +206,24 @@
                         class:text-primary={$language === "en"}>EN</span
                     >
                 </button>
-                <button class="btn btn-ghost" on:click={logout}>Logout</button>
+                <button class="btn btn-ghost" on:click={logout}
+                    >{translations[$language].logout}</button
+                >
             </div>
         </div>
 
         {#if activeTab === "config"}
             <div class="card bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <h2 class="card-title">Website Configuration</h2>
+                    <h2 class="card-title">
+                        {translations[$language].website_config}
+                    </h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="form-control">
                             <label class="label" for="groomName"
-                                ><span class="label-text">Groom Name</span
+                                ><span class="label-text"
+                                    >{translations[$language].groom_name}</span
                                 ></label
                             >
                             <input
@@ -229,7 +235,9 @@
                         </div>
                         <div class="form-control">
                             <label class="label" for="groomNickname"
-                                ><span class="label-text">Groom Nickname</span
+                                ><span class="label-text"
+                                    >{translations[$language]
+                                        .groom_nickname}</span
                                 ></label
                             >
                             <input
@@ -241,7 +249,8 @@
                         </div>
                         <div class="form-control">
                             <label class="label" for="brideName"
-                                ><span class="label-text">Bride Name</span
+                                ><span class="label-text"
+                                    >{translations[$language].bride_name}</span
                                 ></label
                             >
                             <input
@@ -253,7 +262,9 @@
                         </div>
                         <div class="form-control">
                             <label class="label" for="brideNickname"
-                                ><span class="label-text">Bride Nickname</span
+                                ><span class="label-text"
+                                    >{translations[$language]
+                                        .bride_nickname}</span
                                 ></label
                             >
                             <input
@@ -265,7 +276,9 @@
                         </div>
                         <div class="form-control">
                             <label class="label" for="weddingDate"
-                                ><span class="label-text">Wedding Date</span
+                                ><span class="label-text"
+                                    >{translations[$language]
+                                        .wedding_date}</span
                                 ></label
                             >
                             <input
@@ -277,7 +290,9 @@
                         </div>
                         <div class="form-control">
                             <label class="label" for="weddingLocation"
-                                ><span class="label-text">Location</span></label
+                                ><span class="label-text"
+                                    >{translations[$language].location}</span
+                                ></label
                             >
                             <input
                                 type="text"
@@ -288,21 +303,33 @@
                         </div>
                         <div class="form-control">
                             <label class="label" for="themeColor"
-                                ><span class="label-text">Theme</span></label
+                                ><span class="label-text"
+                                    >{translations[$language].theme}</span
+                                ></label
                             >
                             <select
                                 id="themeColor"
                                 bind:value={$config.themeColor}
                                 class="select select-bordered"
                             >
-                                <option value="valentine">Valentine</option>
-                                <option value="luxury">Luxury</option>
-                                <option value="garden">Garden</option>
+                                <option value="valentine"
+                                    >{translations[$language]
+                                        .theme_valentine}</option
+                                >
+                                <option value="luxury"
+                                    >{translations[$language]
+                                        .theme_luxury}</option
+                                >
+                                <option value="garden"
+                                    >{translations[$language]
+                                        .theme_garden}</option
+                                >
                             </select>
                         </div>
                         <div class="form-control">
                             <label class="label" for="videoUrl"
-                                ><span class="label-text">Video URL</span
+                                ><span class="label-text"
+                                    >{translations[$language].video_url}</span
                                 ></label
                             >
                             <input
@@ -314,7 +341,8 @@
                         </div>
                         <div class="form-control md:col-span-2">
                             <label class="label" for="description"
-                                ><span class="label-text">Description</span
+                                ><span class="label-text"
+                                    >{translations[$language].description}</span
                                 ></label
                             >
                             <textarea
@@ -325,12 +353,15 @@
                         </div>
                     </div>
 
-                    <div class="divider">QR Code Settings</div>
+                    <div class="divider">
+                        {translations[$language].qr_code_settings}
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="form-control">
                             <label class="label" for="qrCodeStartTime"
                                 ><span class="label-text"
-                                    >QR Code Start Time</span
+                                    >{translations[$language]
+                                        .qr_code_start}</span
                                 ></label
                             >
                             <input
@@ -342,7 +373,8 @@
                         </div>
                         <div class="form-control">
                             <label class="label" for="qrCodeEndTime"
-                                ><span class="label-text">QR Code End Time</span
+                                ><span class="label-text"
+                                    >{translations[$language].qr_code_end}</span
                                 ></label
                             >
                             <input
@@ -354,11 +386,14 @@
                         </div>
                     </div>
 
-                    <div class="divider">Bank Account</div>
+                    <div class="divider">
+                        {translations[$language].bank_account}
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div class="form-control">
                             <label class="label" for="bankName"
-                                ><span class="label-text">Bank Name</span
+                                ><span class="label-text"
+                                    >{translations[$language].bank}</span
                                 ></label
                             >
                             <input
@@ -370,7 +405,9 @@
                         </div>
                         <div class="form-control">
                             <label class="label" for="accountName"
-                                ><span class="label-text">Account Name</span
+                                ><span class="label-text"
+                                    >{translations[$language]
+                                        .account_name}</span
                                 ></label
                             >
                             <input
@@ -382,7 +419,9 @@
                         </div>
                         <div class="form-control">
                             <label class="label" for="accountNumber"
-                                ><span class="label-text">Account Number</span
+                                ><span class="label-text"
+                                    >{translations[$language]
+                                        .account_number}</span
                                 ></label
                             >
                             <input
@@ -394,7 +433,7 @@
                         </div>
                     </div>
 
-                    <div class="divider">Toggles</div>
+                    <div class="divider">{translations[$language].toggles}</div>
 
                     <div
                         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
@@ -406,7 +445,8 @@
                                 class="label cursor-pointer justify-start gap-4"
                             >
                                 <span class="label-text font-medium"
-                                    >Show Gallery</span
+                                    >{translations[$language]
+                                        .show_gallery}</span
                                 >
                                 <input
                                     type="checkbox"
@@ -422,7 +462,7 @@
                                 class="label cursor-pointer justify-start gap-4"
                             >
                                 <span class="label-text font-medium"
-                                    >Show RSVP</span
+                                    >{translations[$language].show_rsvp}</span
                                 >
                                 <input
                                     type="checkbox"
@@ -438,7 +478,7 @@
                                 class="label cursor-pointer justify-start gap-4"
                             >
                                 <span class="label-text font-medium"
-                                    >Show Map</span
+                                    >{translations[$language].show_map}</span
                                 >
                                 <input
                                     type="checkbox"
@@ -454,7 +494,7 @@
                                 class="label cursor-pointer justify-start gap-4"
                             >
                                 <span class="label-text font-medium"
-                                    >Show Video</span
+                                    >{translations[$language].show_video}</span
                                 >
                                 <input
                                     type="checkbox"
@@ -470,7 +510,8 @@
                                 class="label cursor-pointer justify-start gap-4"
                             >
                                 <span class="label-text font-medium"
-                                    >Show Guestbook</span
+                                    >{translations[$language]
+                                        .show_guestbook}</span
                                 >
                                 <input
                                     type="checkbox"
@@ -486,7 +527,8 @@
                                 class="label cursor-pointer justify-start gap-4"
                             >
                                 <span class="label-text font-medium"
-                                    >Show Countdown</span
+                                    >{translations[$language]
+                                        .show_countdown}</span
                                 >
                                 <input
                                     type="checkbox"
@@ -502,7 +544,8 @@
                                 class="label cursor-pointer justify-start gap-4"
                             >
                                 <span class="label-text font-medium"
-                                    >Show Schedule</span
+                                    >{translations[$language]
+                                        .show_schedule}</span
                                 >
                                 <input
                                     type="checkbox"
@@ -518,7 +561,8 @@
                                 class="label cursor-pointer justify-start gap-4"
                             >
                                 <span class="label-text font-medium"
-                                    >Show QR Code</span
+                                    >{translations[$language]
+                                        .show_qr_code}</span
                                 >
                                 <input
                                     type="checkbox"
@@ -531,7 +575,7 @@
 
                     <div class="card-actions justify-end mt-4">
                         <button class="btn btn-primary" on:click={saveConfig}
-                            >Save Changes</button
+                            >{translations[$language].save_changes}</button
                         >
                     </div>
                 </div>
@@ -541,10 +585,10 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Status</th>
-                            <th>Attendees</th>
-                            <th>Message</th>
+                            <th>{translations[$language].name}</th>
+                            <th>{translations[$language].status}</th>
+                            <th>{translations[$language].attendees}</th>
+                            <th>{translations[$language].message}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -554,15 +598,16 @@
                                 <td>
                                     {#if rsvp.status === "attending"}
                                         <div class="badge badge-success">
-                                            Attending
+                                            {translations[$language].attending}
                                         </div>
                                     {:else if rsvp.status === "not-sure"}
                                         <div class="badge badge-warning">
-                                            Not Sure
+                                            {translations[$language].not_sure}
                                         </div>
                                     {:else}
                                         <div class="badge badge-error">
-                                            Not Attending
+                                            {translations[$language]
+                                                .not_attending}
                                         </div>
                                     {/if}
                                 </td>
@@ -619,33 +664,41 @@
         ></label>
         <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
             <!-- Sidebar content here -->
-            <li class="mb-4 text-xl font-bold px-4">Admin Panel</li>
+            <li class="mb-4 text-xl font-bold px-4">
+                {translations[$language].admin_panel}
+            </li>
             <li>
                 <button
                     class:active={activeTab === "config"}
                     on:click={() => (activeTab = "config")}
-                    >Configuration</button
+                    >{translations[$language].configuration}</button
                 >
             </li>
             <li>
                 <button
                     class:active={activeTab === "rsvp"}
-                    on:click={() => (activeTab = "rsvp")}>RSVP List</button
+                    on:click={() => (activeTab = "rsvp")}
+                    >{translations[$language].rsvp_list}</button
                 >
             </li>
             <li>
                 <button
                     class:active={activeTab === "guestbook"}
-                    on:click={() => (activeTab = "guestbook")}>Guestbook</button
+                    on:click={() => (activeTab = "guestbook")}
+                    >{translations[$language].guestbook}</button
                 >
             </li>
             <div class="divider"></div>
             <li>
                 <button on:click={testConnection}
-                    >Test Firebase Connection</button
+                    >{translations[$language].test_connection}</button
                 >
             </li>
-            <li><a href="/" target="_blank">View Site</a></li>
+            <li>
+                <a href="/" target="_blank"
+                    >{translations[$language].view_site}</a
+                >
+            </li>
         </ul>
     </div>
 </div>
