@@ -9,10 +9,13 @@
   import { db } from "./lib/firebase";
   import { config } from "./lib/store";
 
+  import GalleryPage from "./routes/GalleryPage.svelte";
+
   const routes = {
     "/": Home,
     "/admin": Admin,
     "/login": Login,
+    "/gallery": GalleryPage,
   };
 
   let isLoading = true;
