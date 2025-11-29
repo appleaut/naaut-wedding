@@ -104,6 +104,12 @@ export const translations = {
         gift_for_couple: "Gift for the Couple",
         scan_to_gift: "Scan to send a gift",
         invalid_account_no: "Invalid Account No.",
+        leave_a_wish: "Leave a wish",
+        your_name: "Your Name",
+        write_something_sweet: "Write something sweet...",
+        post: "Post",
+        no_wishes_yet: "No wishes yet. Be the first!",
+        post_wish_error: "Failed to post wish. Please try again.",
     },
     th: {
         home: "หน้าแรก",
@@ -210,6 +216,12 @@ export const translations = {
         gift_for_couple: "ของขวัญสำหรับคู่บ่าวสาว",
         scan_to_gift: "สแกนเพื่อส่งของขวัญ",
         invalid_account_no: "เลขที่บัญชีไม่ถูกต้อง",
+        leave_a_wish: "เขียนคำอวยพร",
+        your_name: "ชื่อของคุณ",
+        write_something_sweet: "เขียนข้อความอวยพร...",
+        post: "โพสต์",
+        no_wishes_yet: "ยังไม่มีคำอวยพร มาเป็นคนแรกกันเถอะ!",
+        post_wish_error: "ไม่สามารถส่งคำอวยพรได้ กรุณาลองใหม่อีกครั้ง",
     }
 };
 

@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { config } from "../lib/store";
+    import { config, language } from "../lib/store";
+    import { translations } from "../lib/translations";
     import { onMount, onDestroy } from "svelte";
     import { db } from "../lib/firebase";
     import {
@@ -15,6 +16,8 @@
     let newMessage = "";
     let submitting = false;
     let unsubscribe: () => void;
+
+    $: t = translations[$language];
 
     onMount(() => {
         const q = query(
@@ -55,7 +58,7 @@
             newMessage = "";
         } catch (error) {
             console.error("Error adding document: ", error);
-            alert("Failed to post wish. Please try again.");
+            alert(t.post_wish_error);
         } finally {
             submitting = false;
         }
@@ -65,21 +68,23 @@
 {#if $config.showGuestbook}
     <div class="py-10 bg-base-100">
         <div class="container mx-auto px-4 max-w-2xl">
-            <h2 class="text-3xl font-bold text-center mb-8">Guestbook</h2>
+            <h2 class="text-3xl font-bold text-center mb-8">{t.guestbook}</h2>
 
             <!-- Input Form -->
             <div class="card bg-base-200 shadow-xl mb-8">
                 <div class="card-body">
-                    <h3 class="card-title text-sm opacity-70">Leave a wish</h3>
+                    <h3 class="card-title text-sm opacity-70">
+                        {t.leave_a_wish}
+                    </h3>
                     <input
                         type="text"
-                        placeholder="Your Name"
+                        placeholder={t.your_name}
                         class="input input-bordered w-full mb-2"
                         bind:value={newName}
                     />
                     <textarea
                         class="textarea textarea-bordered w-full mb-2"
-                        placeholder="Write something sweet..."
+                        placeholder={t.write_something_sweet}
                         bind:value={newMessage}
                     ></textarea>
                     <div class="card-actions justify-end">
@@ -92,7 +97,7 @@
                                 <span class="loading loading-spinner loading-xs"
                                 ></span>
                             {/if}
-                            Post
+                            {t.post}
                         </button>
                     </div>
                 </div>
@@ -119,7 +124,7 @@
                 {/each}
                 {#if wishes.length === 0}
                     <div class="text-center opacity-50 py-10">
-                        No wishes yet. Be the first!
+                        {t.no_wishes_yet}
                     </div>
                 {/if}
             </div>
