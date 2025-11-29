@@ -24,7 +24,25 @@
             const docRef = doc(db, "config", "main");
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
-                config.set(docSnap.data() as any);
+                const data = docSnap.data();
+
+                // Helper to format date for datetime-local input (YYYY-MM-DDThh:mm)
+                const formatDate = (dateStr: string) => {
+                    if (!dateStr) return "";
+                    const d = new Date(dateStr);
+                    if (isNaN(d.getTime())) return dateStr;
+                    const pad = (n: number) => n.toString().padStart(2, "0");
+                    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+                };
+
+                if (data.weddingDate)
+                    data.weddingDate = formatDate(data.weddingDate);
+                if (data.qrCodeStartTime)
+                    data.qrCodeStartTime = formatDate(data.qrCodeStartTime);
+                if (data.qrCodeEndTime)
+                    data.qrCodeEndTime = formatDate(data.qrCodeEndTime);
+
+                config.set(data as any);
             }
         } catch (e) {
             console.error("Error loading config:", e);
@@ -98,7 +116,25 @@
 
     async function saveConfig() {
         try {
-            await setDoc(doc(db, "config", "main"), $config);
+            const configToSave = { ...$config };
+
+            // Convert local date strings back to ISO strings for storage
+            const toISO = (dateStr: string) => {
+                if (!dateStr) return "";
+                const d = new Date(dateStr);
+                return isNaN(d.getTime()) ? dateStr : d.toISOString();
+            };
+
+            if (configToSave.weddingDate)
+                configToSave.weddingDate = toISO(configToSave.weddingDate);
+            if (configToSave.qrCodeStartTime)
+                configToSave.qrCodeStartTime = toISO(
+                    configToSave.qrCodeStartTime,
+                );
+            if (configToSave.qrCodeEndTime)
+                configToSave.qrCodeEndTime = toISO(configToSave.qrCodeEndTime);
+
+            await setDoc(doc(db, "config", "main"), configToSave);
             alert("Configuration saved to Firestore!");
         } catch (e: any) {
             console.error("Error saving config:", e);
