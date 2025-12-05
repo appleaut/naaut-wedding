@@ -24,7 +24,7 @@ export interface WeddingConfig {
     qrCodeStartTime: string;
     qrCodeEndTime: string;
     videoUrl: string;
-    galleryImages: string[];
+    galleryImages: (string | { small: string, large: string })[];
     bankAccount: {
         bankName: string;
         accountName: string;

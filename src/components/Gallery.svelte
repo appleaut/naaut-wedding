@@ -15,6 +15,8 @@
         "https://img.daisyui.com/images/stock/photo-1601004890684-d8cbf643f5f2.webp",
     ];
 
+    import { fade } from "svelte/transition";
+
     $: images =
         $config.galleryImages.length > 0
             ? $config.galleryImages
@@ -22,7 +24,44 @@
 
     $: displayedImages = images.slice(0, 7);
     $: hasMore = images.length > 7;
+
+    let selectedIndex: number = -1;
+
+    function openImage(index: number) {
+        selectedIndex = index;
+    }
+
+    function closeImage() {
+        selectedIndex = -1;
+    }
+
+    function nextImage(e: Event) {
+        e.stopPropagation();
+        if (selectedIndex < images.length - 1) {
+            selectedIndex++;
+        } else {
+            selectedIndex = 0; // Loop to first
+        }
+    }
+
+    function prevImage(e: Event) {
+        e.stopPropagation();
+        if (selectedIndex > 0) {
+            selectedIndex--;
+        } else {
+            selectedIndex = images.length - 1; // Loop to last
+        }
+    }
+
+    function handleKeydown(e: KeyboardEvent) {
+        if (selectedIndex === -1) return;
+        if (e.key === "ArrowRight") nextImage(e);
+        if (e.key === "ArrowLeft") prevImage(e);
+        if (e.key === "Escape") closeImage();
+    }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 {#if $config.showGallery}
     <div class="py-20 bg-wedding-beige text-wedding-dark font-sans">
@@ -35,9 +74,14 @@
                 class="carousel carousel-center w-full p-4 space-x-4 bg-transparent"
             >
                 {#each displayedImages as img, i}
-                    <div class="carousel-item">
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
+                    <div
+                        class="carousel-item cursor-pointer hover:opacity-90 transition-opacity"
+                        on:click={() => openImage(i)}
+                    >
                         <img
-                            src={img}
+                            src={typeof img === "string" ? img : img.small}
                             alt="{translations[$language].gallery} {i}"
                             class="h-64 lg:h-96 object-cover shadow-md rounded-box"
                         />
@@ -67,4 +111,89 @@
             </p>
         </div>
     </div>
+
+    {#if selectedIndex !== -1}
+        {@const selectedImg = images[selectedIndex]}
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        <div
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4"
+            on:click={closeImage}
+            transition:fade
+        >
+            <button
+                class="absolute top-4 right-4 btn btn-circle btn-ghost text-white z-50"
+                on:click={closeImage}
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                    />
+                </svg>
+            </button>
+
+            <!-- Prev Button -->
+            <button
+                class="absolute left-4 top-1/2 -translate-y-1/2 btn btn-circle btn-ghost text-white z-50 flex"
+                on:click={prevImage}
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 19l-7-7 7-7"
+                    />
+                </svg>
+            </button>
+
+            <!-- Next Button -->
+            <button
+                class="absolute right-4 top-1/2 -translate-y-1/2 btn btn-circle btn-ghost text-white z-50 flex"
+                on:click={nextImage}
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
+                    />
+                </svg>
+            </button>
+
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
+            <div class="contents" on:click|stopPropagation>
+                <img
+                    src={typeof selectedImg === "string"
+                        ? selectedImg
+                        : selectedImg.large}
+                    alt="Full size"
+                    class="max-h-full max-w-full object-contain rounded-lg shadow-2xl"
+                />
+            </div>
+        </div>
+    {/if}
 {/if}

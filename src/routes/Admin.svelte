@@ -491,23 +491,78 @@
 
     let uploading = false;
 
+    function resizeImage(file: File, maxWidth: number): Promise<Blob> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext("2d");
+                    if (ctx) {
+                        ctx.drawImage(img, 0, 0, width, height);
+                        canvas.toBlob(
+                            (blob) => {
+                                if (blob) resolve(blob);
+                                else reject(new Error("Canvas to Blob failed"));
+                            },
+                            file.type,
+                            0.8,
+                        );
+                    } else {
+                        reject(new Error("Canvas context failed"));
+                    }
+                };
+                img.onerror = reject;
+                img.src = e.target?.result as string;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
     async function uploadImage(event: Event) {
         const input = event.target as HTMLInputElement;
         if (!input.files || input.files.length === 0) return;
 
         const file = input.files[0];
-        const storageRef = ref(
-            storage,
-            `image/gallery/${Date.now()}_${file.name}`,
-        );
+        const timestamp = Date.now();
+        const extension = file.name.split(".").pop();
+        const randomId = Math.random().toString(36).substring(2, 9);
+        const newFileName = `${timestamp}_${randomId}.${extension}`;
 
         uploading = true;
         try {
-            const snapshot = await uploadBytes(storageRef, file);
-            const downloadURL = await getDownloadURL(snapshot.ref);
+            // Resize for thumbnail
+            const smallBlob = await resizeImage(file, 600);
+
+            const largeRef = ref(storage, `image/gallery/large_${newFileName}`);
+            const smallRef = ref(storage, `image/gallery/small_${newFileName}`);
+
+            // Upload both
+            const [largeSnapshot, smallSnapshot] = await Promise.all([
+                uploadBytes(largeRef, file),
+                uploadBytes(smallRef, smallBlob),
+            ]);
+
+            const largeUrl = await getDownloadURL(largeSnapshot.ref);
+            const smallUrl = await getDownloadURL(smallSnapshot.ref);
 
             if (!$config.galleryImages) $config.galleryImages = [];
-            $config.galleryImages = [...$config.galleryImages, downloadURL];
+            $config.galleryImages = [
+                ...$config.galleryImages,
+                { small: smallUrl, large: largeUrl }, // New Object Structure
+            ];
 
             await saveConfig();
             showToastNotification(translations[$language].upload_success);
@@ -522,39 +577,42 @@
         }
     }
 
-    async function deleteImage(url: string) {
+    async function deleteImage(img: string | { small: string; large: string }) {
         if (!confirm(translations[$language].delete_image_confirm)) return;
 
         try {
-            // Create a reference to the file to delete
-            const imageRef = ref(storage, url);
-
-            // Delete the file
-            await deleteObject(imageRef);
+            if (typeof img === "string") {
+                const imageRef = ref(storage, img);
+                try {
+                    await deleteObject(imageRef);
+                } catch (e: any) {
+                    if (e.code !== "storage/object-not-found") throw e;
+                }
+            } else {
+                const smallRef = ref(storage, img.small);
+                const largeRef = ref(storage, img.large);
+                await Promise.all([
+                    deleteObject(smallRef).catch((e) => {
+                        if (e.code !== "storage/object-not-found") throw e;
+                    }),
+                    deleteObject(largeRef).catch((e) => {
+                        if (e.code !== "storage/object-not-found") throw e;
+                    }),
+                ]);
+            }
 
             // Update config
             $config.galleryImages = $config.galleryImages.filter(
-                (img) => img !== url,
+                (item) => item !== img,
             );
             await saveConfig();
 
             showToastNotification(translations[$language].delete_image_success);
         } catch (e) {
             console.error("Delete failed:", e);
-            // If the file is not found in storage (e.g. already deleted), still remove from config
-            if ((e as any).code === "storage/object-not-found") {
-                $config.galleryImages = $config.galleryImages.filter(
-                    (img) => img !== url,
-                );
-                await saveConfig();
-                showToastNotification(
-                    translations[$language].delete_image_success,
-                );
-            } else {
-                modalMessage = translations[$language].delete_image_error;
-                modalType = "error";
-                showModal = true;
-            }
+            modalMessage = translations[$language].delete_image_error;
+            modalType = "error";
+            showModal = true;
         }
     }
 </script>
@@ -1336,7 +1394,9 @@
                             {#each $config.galleryImages as img}
                                 <div class="relative group aspect-square">
                                     <img
-                                        src={img}
+                                        src={typeof img === "string"
+                                            ? img
+                                            : img.small}
                                         alt="Gallery"
                                         class="w-full h-full object-cover rounded-lg shadow-md"
                                     />

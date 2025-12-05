@@ -102,7 +102,7 @@
                     on:click={() => openImage(i)}
                 >
                     <img
-                        src={img}
+                        src={typeof img === "string" ? img : img.small}
                         alt="{translations[$language].gallery} {i}"
                         class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
@@ -113,6 +113,7 @@
     </div>
 
     {#if selectedIndex !== -1}
+        {@const selectedImg = images[selectedIndex]}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <div
@@ -142,7 +143,7 @@
 
             <!-- Prev Button -->
             <button
-                class="absolute left-4 top-1/2 -translate-y-1/2 btn btn-circle btn-ghost text-white z-50 hidden md:flex"
+                class="absolute left-4 top-1/2 -translate-y-1/2 btn btn-circle btn-ghost text-white z-50 flex"
                 on:click={prevImage}
             >
                 <svg
@@ -163,7 +164,7 @@
 
             <!-- Next Button -->
             <button
-                class="absolute right-4 top-1/2 -translate-y-1/2 btn btn-circle btn-ghost text-white z-50 hidden md:flex"
+                class="absolute right-4 top-1/2 -translate-y-1/2 btn btn-circle btn-ghost text-white z-50 flex"
                 on:click={nextImage}
             >
                 <svg
@@ -186,7 +187,9 @@
             <!-- svelte-ignore a11y-no-static-element-interactions -->
             <div class="contents" on:click|stopPropagation>
                 <img
-                    src={images[selectedIndex]}
+                    src={typeof selectedImg === "string"
+                        ? selectedImg
+                        : selectedImg.large}
                     alt="Full size"
                     class="max-h-full max-w-full object-contain rounded-lg shadow-2xl"
                 />

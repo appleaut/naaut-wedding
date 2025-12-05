@@ -20,7 +20,7 @@
         class="mb-8 text-xl md:text-2xl font-light tracking-wide flex flex-col md:flex-row items-center justify-center"
       >
         <span class="whitespace-nowrap">{$config.brideName}</span>
-        <span class="text-sm opacity-75 my-1 md:my-0 md:mx-2">&</span>
+        <span class="text-sm opacity-75 my-1 md:my-0 md:mx-2">❤</span>
         <span class="whitespace-nowrap">{$config.groomName}</span>
       </div>
       <h1 class="mb-6 text-6xl md:text-8xl font-bold leading-tight">
