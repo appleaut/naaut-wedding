@@ -16,10 +16,17 @@
           ? "มีความยินดีขอเรียนเชิญเพื่อเป็นเกียรติและร่วมรับประทานอาหาร เนื่องในงานพิธีมงคลสมรส"
           : "We kindly request the pleasure of your company and invite you to a celebratory dinner for our wedding."}
       </p>
+      <div
+        class="mb-8 text-xl md:text-2xl font-light tracking-wide flex flex-col md:flex-row items-center justify-center"
+      >
+        <span class="whitespace-nowrap">{$config.brideName}</span>
+        <span class="text-sm opacity-75 my-1 md:my-0 md:mx-2">&</span>
+        <span class="whitespace-nowrap">{$config.groomName}</span>
+      </div>
       <h1 class="mb-6 text-6xl md:text-8xl font-bold leading-tight">
-        {$config.brideNickname}
+        <span class="whitespace-nowrap">{$config.brideNickname}</span>
         <span class="text-4xl md:text-6xl align-middle">&</span>
-        {$config.groomNickname}
+        <span class="whitespace-nowrap">{$config.groomNickname}</span>
       </h1>
       <div class="flex flex-col gap-2 mb-8">
         <p class="text-xl md:text-2xl tracking-widest">

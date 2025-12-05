@@ -136,6 +136,12 @@
                     data.dressCodeColors = ["#ffffff"];
                 }
 
+                if (data.sectionOrder) {
+                    data.sectionOrder = data.sectionOrder.filter(
+                        (section: string) => section !== "CoupleProfile",
+                    );
+                }
+
                 config.set(data as any);
                 originalConfig = JSON.stringify(data);
             }
@@ -640,6 +646,7 @@
                                 class="input input-bordered"
                             />
                         </div>
+
                         <div class="form-control">
                             <div class="label">
                                 <span class="label-text">
@@ -667,6 +674,7 @@
                                 class="input input-bordered"
                             />
                         </div>
+
                         <div class="form-control">
                             <div class="label">
                                 <span class="label-text">

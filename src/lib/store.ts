@@ -6,6 +6,7 @@ export interface WeddingConfig {
     groomNickname: string;
     brideName: string;
     brideNickname: string;
+
     weddingDate: string; // ISO string
     weddingLocation: string;
     themeColor: string;
@@ -39,6 +40,7 @@ const defaultConfig: WeddingConfig = {
     groomNickname: "Groom",
     brideName: "Bride Name",
     brideNickname: "Bride",
+
     weddingDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
     weddingLocation: "Wedding Venue",
     themeColor: "valentine",

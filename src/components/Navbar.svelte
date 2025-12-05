@@ -9,6 +9,7 @@
 
   const menuItems: Record<string, TranslationKey> = {
     Countdown: "home",
+
     Schedule: "schedule",
     Map: "map",
     Gallery: "gallery",
