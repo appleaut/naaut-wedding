@@ -3,6 +3,7 @@
 
     let playing = false;
     let audio: HTMLAudioElement;
+    let wasPlayingBeforeHide = false;
 
     onMount(() => {
         const attemptPlay = async () => {
@@ -43,8 +44,29 @@
             audio.addEventListener("canplay", attemptPlay, { once: true });
         }
 
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                wasPlayingBeforeHide = playing;
+                if (playing) {
+                    audio.pause();
+                }
+            } else {
+                if (wasPlayingBeforeHide) {
+                    audio.play().catch(() => {
+                        // Ignore auto-play errors
+                    });
+                }
+            }
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
         return () => {
             removeInteractionListeners();
+            document.removeEventListener(
+                "visibilitychange",
+                handleVisibilityChange,
+            );
         };
     });
     // Use a royalty free music or placeholder
