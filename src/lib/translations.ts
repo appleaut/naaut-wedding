@@ -315,3 +315,4 @@ export const translations = {
 };
 
 export type Language = 'en' | 'th';
+export type TranslationKey = keyof typeof translations.en;

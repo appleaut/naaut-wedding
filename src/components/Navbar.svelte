@@ -1,13 +1,13 @@
 <script lang="ts">
   import { language, config } from "../lib/store";
-  import { translations } from "../lib/translations";
+  import { translations, type TranslationKey } from "../lib/translations";
   import QRCode from "./QRCode.svelte";
 
   function toggleLanguage() {
     $language = $language === "th" ? "en" : "th";
   }
 
-  const menuItems: Record<string, string> = {
+  const menuItems: Record<string, TranslationKey> = {
     Countdown: "home",
     Schedule: "schedule",
     Map: "map",
