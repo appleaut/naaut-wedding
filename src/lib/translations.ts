@@ -160,6 +160,7 @@ export const translations = {
         total_responses: "Total Responses",
         total_guests: "Total Guests",
         export_excel: "Export to Excel",
+        no_wishes_found: "No wishes found.",
     },
     th: {
         home: "หน้าแรก",
@@ -322,6 +323,7 @@ export const translations = {
         total_responses: "จำนวนผู้ตอบกลับ",
         total_guests: "จำนวนแขกทั้งหมด",
         export_excel: "ส่งออกเป็น Excel",
+        no_wishes_found: "ยังไม่มีรายการคำอวยพร",
     }
 
 };

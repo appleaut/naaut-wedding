@@ -1440,6 +1440,13 @@
             </div>
         {:else if activeTab === "guestbook"}
             <div class="grid gap-4">
+                {#if wishes.length === 0}
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body text-center text-base-content/60 py-10">
+                             {translations[$language].no_wishes_found}
+                        </div>
+                    </div>
+                {/if}
                 {#each wishes as wish}
                     <div class="card bg-base-100 shadow-xl">
                         <div class="card-body">
