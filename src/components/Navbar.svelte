@@ -46,6 +46,18 @@
     return ($config as any)[sectionVisibility[section]];
   }
 
+  function handleNavClick(e: MouseEvent, section: string) {
+    if (section === "Countdown") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      history.pushState(null, "", "/");
+    }
+    // Close dropdown menu on mobile by blurring the active element
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }
+
   $: t = translations[$language];
   $: sections = $config.sectionOrder || defaultOrder;
 </script>
@@ -68,8 +80,9 @@
         {#if menuItems[section] && isSectionVisible(section)}
           <li>
             <a
-              href="#{section.toLowerCase()}"
+              href={section === "Countdown" ? "/" : `#${section.toLowerCase()}`}
               class="uppercase tracking-wider text-sm hover:text-wedding-green"
+              on:click={(e) => handleNavClick(e, section)}
             >
               {t[menuItems[section]]}
             </a>
@@ -120,7 +133,10 @@
         {#each sections as section}
           {#if menuItems[section] && isSectionVisible(section)}
             <li>
-              <a href="#{section.toLowerCase()}">{t[menuItems[section]]}</a>
+              <a
+                href={section === "Countdown" ? "/" : `#${section.toLowerCase()}`}
+                on:click={(e) => handleNavClick(e, section)}>{t[menuItems[section]]}</a
+              >
             </li>
           {/if}
         {/each}
