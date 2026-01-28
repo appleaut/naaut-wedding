@@ -156,6 +156,10 @@ export const translations = {
         upload_error: "Image upload failed",
         delete_image_success: "Image deleted successfully",
         delete_image_error: "Image deletion failed",
+        summary: "Summary",
+        total_responses: "Total Responses",
+        total_guests: "Total Guests",
+        export_excel: "Export to Excel",
     },
     th: {
         home: "หน้าแรก",
@@ -314,6 +318,10 @@ export const translations = {
         upload_error: "อัปโหลดรูปภาพล้มเหลว",
         delete_image_success: "ลบรูปภาพสำเร็จ",
         delete_image_error: "ลบรูปภาพล้มเหลว",
+        summary: "สรุปยอดรวม",
+        total_responses: "จำนวนผู้ตอบกลับ",
+        total_guests: "จำนวนแขกทั้งหมด",
+        export_excel: "ส่งออกเป็น Excel",
     }
 
 };

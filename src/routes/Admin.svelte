@@ -227,6 +227,65 @@
         }
     }
 
+    $: totalResponses = rsvps.length;
+    $: attendingCount = rsvps.filter((r) => r.status === "attending").length;
+    $: notSureCount = rsvps.filter((r) => r.status === "not-sure").length;
+    $: notAttendingCount = rsvps.filter(
+        (r) => r.status !== "attending" && r.status !== "not-sure",
+    ).length;
+    $: totalGuests = rsvps.reduce((sum, r) => {
+        const count = parseInt(r.attendees);
+        return sum + (isNaN(count) ? 0 : count);
+    }, 0);
+
+    function exportToExcel() {
+        const headers = [
+            translations[$language].name,
+            translations[$language].status,
+            translations[$language].attendees,
+            translations[$language].message,
+        ];
+
+        const rows = rsvps.map((r) => {
+            let statusText = "";
+            if (r.status === "attending")
+                statusText = translations[$language].attending;
+            else if (r.status === "not-sure")
+                statusText = translations[$language].not_sure;
+            else statusText = translations[$language].not_attending;
+
+            // Escape quotes and wrap in quotes for CSV safety
+            const escape = (text: string) => {
+                if (!text) return "";
+                return `"${text.toString().replace(/"/g, '""')}"`;
+            };
+
+            return [
+                escape(r.name),
+                escape(statusText),
+                r.attendees || 0,
+                escape(r.message),
+            ].join(",");
+        });
+
+        const bomber = "\uFEFF"; // Byte Order Mark for UTF-8 to display Thai correctly in Excel
+        const csvContent = bomber + headers.join(",") + "\n" + rows.join("\n");
+        const blob = new Blob([csvContent], {
+            type: "text/csv;charset=utf-8;",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute(
+            "download",
+            `rsvp_list_${new Date().toISOString().split("T")[0]}.csv`,
+        );
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     let wishes: any[] = [];
 
     async function fetchGuestbook() {
@@ -1226,6 +1285,64 @@
                 </div>
             </div>
         {:else if activeTab === "rsvp"}
+            <div
+                class="flex flex-col lg:flex-row gap-4 mb-4 items-start lg:items-end justify-between"
+            >
+                <div class="stats shadow w-full lg:w-auto bg-base-100">
+                    <div class="stat place-items-center">
+                        <div class="stat-title">
+                            {translations[$language].total_responses}
+                        </div>
+                        <div class="stat-value">{totalResponses}</div>
+                        <div class="stat-desc">
+                            {translations[$language].total_guests}: {totalGuests}
+                        </div>
+                    </div>
+                    <div class="stat place-items-center">
+                        <div class="stat-title text-success">
+                            {translations[$language].attending}
+                        </div>
+                        <div class="stat-value text-success">
+                            {attendingCount}
+                        </div>
+                    </div>
+                    <div class="stat place-items-center">
+                        <div class="stat-title text-warning">
+                            {translations[$language].not_sure}
+                        </div>
+                        <div class="stat-value text-warning">{notSureCount}</div>
+                    </div>
+                    <div class="stat place-items-center">
+                        <div class="stat-title text-error">
+                            {translations[$language].not_attending}
+                        </div>
+                        <div class="stat-value text-error">
+                            {notAttendingCount}
+                        </div>
+                    </div>
+                </div>
+                <button
+                    class="btn btn-success text-white w-full lg:w-auto"
+                    on:click={exportToExcel}
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6 mr-2"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+                        />
+                    </svg>
+                    {translations[$language].export_excel}
+                </button>
+            </div>
+
             <!-- Desktop View -->
             <div
                 class="hidden md:block overflow-x-auto bg-base-100 shadow-xl rounded-box"
