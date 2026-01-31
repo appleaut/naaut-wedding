@@ -132,7 +132,7 @@
           <h3 class="text-xl font-serif mb-2">
             {translations[$language].dress_code}
           </h3>
-          <div class="flex gap-3 justify-center mt-2">
+          <div class="flex flex-wrap gap-3 justify-center mt-2">
             {#if $config.dressCodeColors}
               {#each $config.dressCodeColors as color}
                 <!-- svelte-ignore a11y-click-events-have-key-events -->

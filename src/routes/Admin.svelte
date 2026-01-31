@@ -514,7 +514,7 @@
 
     function addDressCodeColor() {
         if (!$config.dressCodeColors) $config.dressCodeColors = [];
-        if ($config.dressCodeColors.length < 3) {
+        if ($config.dressCodeColors.length < 6) {
             $config.dressCodeColors = [...$config.dressCodeColors, "#ffffff"];
         }
     }
@@ -1049,7 +1049,7 @@
                                         </div>
                                     </div>
                                 {/each}
-                                {#if $config.dressCodeColors.length < 3}
+                                {#if $config.dressCodeColors.length < 6}
                                     <button
                                         class="btn btn-outline btn-sm h-10 border-dashed"
                                         on:click={addDressCodeColor}
