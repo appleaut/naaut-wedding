@@ -158,13 +158,38 @@
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all"
       on:click={() => (selectedColor = null)}
     >
+      <button
+        class="absolute left-4 md:left-1/4 text-white opacity-80 hover:opacity-100 p-2"
+        on:click|stopPropagation={() => {
+          const colors = $config.dressCodeColors;
+          const currentIndex = colors.findIndex((c) => c === selectedColor);
+          const prevIndex = (currentIndex - 1 + colors.length) % colors.length;
+          selectedColor = colors[prevIndex];
+        }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-10 h-10 md:w-12 md:h-12"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 19.5L8.25 12l7.5-7.5"
+          />
+        </svg>
+      </button>
+
       <div
         class="relative w-64 h-64 rounded-full shadow-2xl border-4 border-white transform transition-all scale-100"
         style="background-color: {selectedColor};"
         on:click|stopPropagation
       >
         <button
-          class="absolute -top-12 left-1/2 -translate-x-1/2 text-white opacity-80 hover:opacity-100"
+          class="absolute -bottom-12 left-1/2 -translate-x-1/2 text-white opacity-80 hover:opacity-100"
           on:click={() => (selectedColor = null)}
         >
           <svg
@@ -183,6 +208,31 @@
           </svg>
         </button>
       </div>
+
+      <button
+        class="absolute right-4 md:right-1/4 text-white opacity-80 hover:opacity-100 p-2"
+        on:click|stopPropagation={() => {
+          const colors = $config.dressCodeColors;
+          const currentIndex = colors.findIndex((c) => c === selectedColor);
+          const nextIndex = (currentIndex + 1) % colors.length;
+          selectedColor = colors[nextIndex];
+        }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-10 h-10 md:w-12 md:h-12"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8.25 4.5l7.5 7.5-7.5 7.5"
+          />
+        </svg>
+      </button>
     </div>
   {/if}
 
