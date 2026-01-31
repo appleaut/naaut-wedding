@@ -3,6 +3,8 @@
   import { translations } from "../lib/translations";
   import { format } from "date-fns";
   import { th, enGB } from "date-fns/locale";
+
+  let selectedColor: string | null = null;
 </script>
 
 {#if $config.showEventDetails}
@@ -133,10 +135,12 @@
           <div class="flex gap-3 justify-center mt-2">
             {#if $config.dressCodeColors}
               {#each $config.dressCodeColors as color}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <div
-                  class="w-8 h-8 rounded-full border border-gray-200 shadow-sm"
+                  class="w-8 h-8 rounded-full border border-gray-200 shadow-sm cursor-pointer transition-transform hover:scale-110"
                   style="background-color: {color};"
                   title={color}
+                  on:click={() => (selectedColor = color)}
                 ></div>
               {/each}
             {/if}
@@ -145,4 +149,39 @@
       </div>
     </div>
   </div>
+
+  {#if selectedColor}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all"
+      on:click={() => (selectedColor = null)}
+    >
+      <div
+        class="relative w-64 h-64 rounded-full shadow-2xl border-4 border-white transform transition-all scale-100"
+        style="background-color: {selectedColor};"
+        on:click|stopPropagation
+      >
+        <button
+          class="absolute -top-12 left-1/2 -translate-x-1/2 text-white opacity-80 hover:opacity-100"
+          on:click={() => (selectedColor = null)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-10 h-10"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  {/if}
+
 {/if}
