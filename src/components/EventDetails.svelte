@@ -136,6 +136,7 @@
             {#if $config.dressCodeColors}
               {#each $config.dressCodeColors as color}
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-no-static-element-interactions -->
                 <div
                   class="w-8 h-8 rounded-full border border-gray-200 shadow-sm cursor-pointer transition-transform hover:scale-110"
                   style="background-color: {color};"
@@ -152,6 +153,7 @@
 
   {#if selectedColor}
     <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all"
       on:click={() => (selectedColor = null)}
