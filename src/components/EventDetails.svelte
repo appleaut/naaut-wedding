@@ -48,13 +48,53 @@
         if (e.key === "Escape") closeCard();
     }
   }
+
+  // Swipe Logic
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  function handleTouchStart(e: TouchEvent) {
+    touchStartX = e.changedTouches[0].screenX;
+  }
+
+  function handleTouchMove(e: TouchEvent) {
+    touchEndX = e.changedTouches[0].screenX;
+  }
+
+  function handleCardTouchEnd() {
+    if (touchStartX - touchEndX > 50) {
+      // Swipe Left -> Next
+      nextCard(new Event('touch'));
+    }
+    if (touchEndX - touchStartX > 50) {
+      // Swipe Right -> Prev
+      prevCard(new Event('touch'));
+    }
+  }
+
+  function handleDressCodeTouchEnd() {
+    if (touchStartX - touchEndX > 50) {
+       // Swipe Left -> Next Color
+       const colors = $config.dressCodeColors;
+       const currentIndex = colors.findIndex((c) => c === selectedColor);
+       const nextIndex = (currentIndex + 1) % colors.length;
+       selectedColor = colors[nextIndex];
+    }
+    if (touchEndX - touchStartX > 50) {
+       // Swipe Right -> Prev Color
+       const colors = $config.dressCodeColors;
+       const currentIndex = colors.findIndex((c) => c === selectedColor);
+       const prevIndex = (currentIndex - 1 + colors.length) % colors.length;
+       selectedColor = colors[prevIndex];
+    }
+  }
 </script>
 
 {#if $config.showEventDetails}
   <div class="hero bg-white py-20 text-wedding-dark font-sans">
     <div class="hero-content flex-col w-full max-w-[90rem]">
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 w-full text-center"
+        class="grid grid-cols-1 sm:grid-cols-2 {$config.showWeddingCard ? 'md:grid-cols-3 lg:grid-cols-5' : 'md:grid-cols-2 lg:grid-cols-4'} gap-8 w-full text-center"
       >
         <div class="flex flex-col items-center p-8 border border-wedding-beige h-full">
           <div class="mb-4 text-wedding-green">
@@ -236,6 +276,9 @@
     <div
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm transition-all"
       on:click={() => (selectedColor = null)}
+      on:touchstart={handleTouchStart}
+      on:touchmove={handleTouchMove}
+      on:touchend={handleDressCodeTouchEnd}
     >
       <button
         class="absolute left-4 md:left-1/4 text-white opacity-80 hover:opacity-100 p-2"
@@ -324,6 +367,9 @@
     <div
         class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-90 p-4"
         transition:fade
+        on:touchstart={handleTouchStart}
+        on:touchmove={handleTouchMove}
+        on:touchend={handleCardTouchEnd}
     >
         <button
             class="absolute top-4 right-4 btn btn-circle btn-ghost text-white z-50"

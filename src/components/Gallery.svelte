@@ -59,6 +59,29 @@
         if (e.key === "ArrowLeft") prevImage(e);
         if (e.key === "Escape") closeImage();
     }
+
+  // Swipe Logic
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  function handleTouchStart(e: TouchEvent) {
+    touchStartX = e.changedTouches[0].screenX;
+  }
+
+  function handleTouchMove(e: TouchEvent) {
+    touchEndX = e.changedTouches[0].screenX;
+  }
+
+  function handleTouchEnd() {
+    if (touchStartX - touchEndX > 50) {
+      // Swipe Left -> Next
+      nextImage(new Event('touch'));
+    }
+    if (touchEndX - touchStartX > 50) {
+      // Swipe Right -> Prev
+      prevImage(new Event('touch'));
+    }
+  }
 </script>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -120,6 +143,9 @@
             class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4"
             on:click={closeImage}
             transition:fade
+            on:touchstart={handleTouchStart}
+            on:touchmove={handleTouchMove}
+            on:touchend={handleTouchEnd}
         >
             <button
                 class="absolute top-4 right-4 btn btn-circle btn-ghost text-white z-50"
