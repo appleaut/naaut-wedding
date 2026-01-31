@@ -137,7 +137,7 @@
 
             <div class="form-control mt-8">
               <button
-                class="btn bg-wedding-dark text-white hover:bg-black rounded-none border-none"
+                class="btn btn-primary text-white rounded-none border-none hover:brightness-90"
                 disabled={submitting}
               >
                 {#if submitting}
