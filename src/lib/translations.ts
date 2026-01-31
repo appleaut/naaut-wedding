@@ -161,6 +161,14 @@ export const translations = {
         total_guests: "Total Guests",
         export_excel: "Export to Excel",
         no_wishes_found: "No wishes found.",
+        edit: "Edit",
+        delete: "Delete",
+        actions: "Actions",
+        rsvp_delete_confirm: "Are you sure you want to delete this RSVP?",
+        rsvp_delete_success: "RSVP deleted successfully.",
+        rsvp_delete_error: "Failed to delete RSVP.",
+        rsvp_update_success: "RSVP updated successfully.",
+        rsvp_update_error: "Failed to update RSVP.",
     },
     th: {
         home: "หน้าแรก",
@@ -324,8 +332,15 @@ export const translations = {
         total_guests: "จำนวนแขกทั้งหมด",
         export_excel: "ส่งออกเป็น Excel",
         no_wishes_found: "ยังไม่มีรายการคำอวยพร",
+        edit: "แก้ไข",
+        delete: "ลบ",
+        actions: "จัดการ",
+        rsvp_delete_confirm: "คุณแน่ใจหรือไม่ว่าต้องการลบรายการลงทะเบียนนี้?",
+        rsvp_delete_success: "ลบรายการลงทะเบียนเรียบร้อยแล้ว",
+        rsvp_delete_error: "ลบรายการลงทะเบียนไม่สำเร็จ",
+        rsvp_update_success: "อัปเดตรายการลงทะเบียนเรียบร้อยแล้ว",
+        rsvp_update_error: "อัปเดตรายการลงทะเบียนไม่สำเร็จ",
     }
-
 };
 
 export type Language = 'en' | 'th';

@@ -674,6 +674,59 @@
             showModal = true;
         }
     }
+
+    let editingRSVP: any = null;
+    let showRSVPModal = false;
+
+    function openEditRSVP(rsvp: any) {
+        editingRSVP = { ...rsvp };
+        showRSVPModal = true;
+    }
+
+    function closeRSVPModal() {
+        showRSVPModal = false;
+        editingRSVP = null;
+    }
+
+    async function saveRSVP() {
+        if (!editingRSVP) return;
+        try {
+            await setDoc(doc(db, "rsvp", editingRSVP.id), editingRSVP);
+            await fetchRSVPs();
+            showToastNotification(translations[$language].rsvp_update_success);
+            closeRSVPModal();
+        } catch (e: any) {
+            console.error("Error saving RSVP:", e);
+            modalMessage = translations[$language].rsvp_update_error;
+            modalType = "error";
+            showModal = true;
+        }
+    }
+
+    async function deleteRSVP(id: string) {
+        rsvpToDelete = id;
+        showRSVPDeleteModal = true;
+    }
+
+    let rsvpToDelete: string | null = null;
+    let showRSVPDeleteModal = false;
+
+    async function confirmDeleteRSVP() {
+        if (!rsvpToDelete) return;
+        try {
+            await deleteDoc(doc(db, "rsvp", rsvpToDelete));
+            await fetchRSVPs();
+            showToastNotification(translations[$language].rsvp_delete_success);
+        } catch (e) {
+            console.error("Error deleting RSVP:", e);
+            modalMessage = translations[$language].rsvp_delete_error;
+            modalType = "error";
+            showModal = true;
+        } finally {
+            showRSVPDeleteModal = false;
+            rsvpToDelete = null;
+        }
+    }
 </script>
 
 <svelte:window on:beforeunload={handleBeforeUnload} />
@@ -1354,6 +1407,7 @@
                             <th>{translations[$language].status}</th>
                             <th>{translations[$language].attendees}</th>
                             <th>{translations[$language].message}</th>
+                            <th>{translations[$language].actions}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1378,6 +1432,22 @@
                                 </td>
                                 <td>{rsvp.attendees}</td>
                                 <td>{rsvp.message}</td>
+                                <td>
+                                    <div class="flex gap-2">
+                                        <button
+                                            class="btn btn-sm btn-ghost text-primary"
+                                            on:click={() => openEditRSVP(rsvp)}
+                                        >
+                                            {translations[$language].edit}
+                                        </button>
+                                        <button
+                                            class="btn btn-sm btn-ghost text-error"
+                                            on:click={() => deleteRSVP(rsvp.id)}
+                                        >
+                                            {translations[$language].delete}
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
                         {/each}
                     </tbody>
@@ -1434,6 +1504,22 @@
                                     </div>
                                 </div>
                             {/if}
+
+                            <div class="divider my-2"></div>
+                            <div class="flex justify-end gap-2">
+                                <button
+                                    class="btn btn-sm btn-ghost text-primary"
+                                    on:click={() => openEditRSVP(rsvp)}
+                                >
+                                    {translations[$language].edit}
+                                </button>
+                                <button
+                                    class="btn btn-sm btn-ghost text-error"
+                                    on:click={() => deleteRSVP(rsvp.id)}
+                                >
+                                    {translations[$language].delete}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 {/each}
@@ -1793,6 +1879,115 @@
         </div>
         <form method="dialog" class="modal-backdrop">
             <button on:click={() => (showConfirmModal = false)}>close</button>
+        </form>
+    </dialog>
+{/if}
+
+{#if showRSVPModal && editingRSVP}
+    <dialog class="modal modal-open" data-theme="valentine">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4">
+                {translations[$language].edit} RSVP
+            </h3>
+            
+            <div class="form-control w-full mb-2">
+                <label class="label" for="rsvp-name">
+                    <span class="label-text">{translations[$language].name}</span>
+                </label>
+                <input
+                    type="text"
+                    id="rsvp-name"
+                    bind:value={editingRSVP.name}
+                    class="input input-bordered w-full"
+                />
+            </div>
+
+            <div class="form-control w-full mb-2">
+                <label class="label" for="rsvp-status">
+                     <span class="label-text">{translations[$language].status}</span>
+                </label>
+                <select
+                    id="rsvp-status"
+                    class="select select-bordered w-full"
+                    bind:value={editingRSVP.status}
+                >
+                    <option value="attending">{translations[$language].attending}</option>
+                    <option value="not-sure">{translations[$language].not_sure}</option>
+                    <option value="not-attending">{translations[$language].not_attending}</option>
+                </select>
+            </div>
+
+            <div class="form-control w-full mb-2">
+                <label class="label" for="rsvp-attendees">
+                    <span class="label-text">{translations[$language].attendees}</span>
+                </label>
+                <input
+                    type="number"
+                    id="rsvp-attendees"
+                    bind:value={editingRSVP.attendees}
+                    class="input input-bordered w-full"
+                />
+            </div>
+
+             <div class="form-control w-full mb-4">
+                <label class="label" for="rsvp-message">
+                    <span class="label-text">{translations[$language].message}</span>
+                </label>
+                <textarea
+                    id="rsvp-message"
+                    bind:value={editingRSVP.message}
+                    class="textarea textarea-bordered h-24"
+                ></textarea>
+            </div>
+
+            <div class="modal-action">
+                <button class="btn" on:click={closeRSVPModal}>
+                    {translations[$language].cancel}
+                </button>
+                <button class="btn btn-primary" on:click={saveRSVP}>
+                    {translations[$language].save_changes}
+                </button>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button on:click={closeRSVPModal}>close</button>
+        </form>
+    </dialog>
+{/if}
+
+{#if showRSVPDeleteModal}
+    <dialog class="modal modal-open" data-theme="valentine">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg text-error">
+                {translations[$language].delete}
+            </h3>
+            <p class="py-4">
+                {translations[$language].rsvp_delete_confirm}
+            </p>
+            <div class="modal-action">
+                <button
+                    class="btn"
+                    on:click={() => {
+                        showRSVPDeleteModal = false;
+                        rsvpToDelete = null;
+                    }}
+                >
+                    {translations[$language].cancel}
+                </button>
+                <button class="btn btn-error" on:click={confirmDeleteRSVP}>
+                    {translations[$language].delete}
+                </button>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button
+                on:click={() => {
+                    showRSVPDeleteModal = false;
+                    rsvpToDelete = null;
+                }}
+            >
+                close
+            </button>
         </form>
     </dialog>
 {/if}
