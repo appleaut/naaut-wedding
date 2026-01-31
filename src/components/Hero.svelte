@@ -2,6 +2,7 @@
   import { config, language } from "../lib/store";
   import { translations } from "../lib/translations";
   import banner from "../static/img/banner.jpg";
+  import { fade } from "svelte/transition";
 </script>
 
 <div
@@ -42,16 +43,21 @@
           {$config.weddingLocation}
         </p>
       </div>
-      {#if $config.showRSVP}
-        <div class="mt-8">
+      
+      <div class="mt-8 flex flex-col md:flex-row gap-4 justify-center items-center">
+        {#if $config.showRSVP}
           <a
             href="#rsvp"
-            class="btn btn-outline text-white border-white hover:bg-white hover:text-wedding-dark hover:border-white rounded-none px-8 tracking-widest"
+            class="btn btn-outline text-white border-white hover:bg-white hover:text-wedding-dark hover:border-white rounded-none px-8 tracking-widest uppercase"
           >
             {translations[$language].rsvp}
           </a>
-        </div>
-      {/if}
+        {/if}
+
+
+      </div>
     </div>
   </div>
 </div>
+
+

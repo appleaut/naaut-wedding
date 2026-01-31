@@ -21,10 +21,12 @@ export interface WeddingConfig {
     showEventDetails: boolean;
     showSchedule: boolean;
     showQRCode: boolean;
+    showWeddingCard: boolean;
     qrCodeStartTime: string;
     qrCodeEndTime: string;
     videoUrl: string;
     galleryImages: (string | { small: string, large: string })[];
+    weddingCardImages: (string | { small: string, large: string })[]; // New field
     bankAccount: {
         bankName: string;
         accountName: string;
@@ -55,10 +57,12 @@ const defaultConfig: WeddingConfig = {
     showEventDetails: true,
     showSchedule: true,
     showQRCode: true,
+    showWeddingCard: true, // New field
     qrCodeStartTime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
     qrCodeEndTime: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000 - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
     videoUrl: "",
     galleryImages: [],
+    weddingCardImages: [], // New field
     bankAccount: {
         bankName: "Bank",
         accountName: "Name",

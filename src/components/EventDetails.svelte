@@ -4,16 +4,59 @@
   import { format } from "date-fns";
   import { th, enGB } from "date-fns/locale";
 
+  import { fade } from "svelte/transition";
+
   let selectedColor: string | null = null;
+  
+  $: cardImages = $config.weddingCardImages || [];
+  let showCard = false;
+  let currentCardIndex = 0;
+
+  function openCard(index: number = 0) {
+    if (cardImages.length > 0) {
+      currentCardIndex = index;
+      showCard = true;
+    }
+  }
+
+  function closeCard() {
+    showCard = false;
+  }
+
+  function nextCard(e: Event) {
+    e.stopPropagation();
+    if (currentCardIndex < cardImages.length - 1) {
+      currentCardIndex++;
+    } else {
+      currentCardIndex = 0;
+    }
+  }
+
+  function prevCard(e: Event) {
+    e.stopPropagation();
+    if (currentCardIndex > 0) {
+      currentCardIndex--;
+    } else {
+      currentCardIndex = cardImages.length - 1;
+    }
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (showCard) {
+        if (e.key === "ArrowRight") nextCard(e);
+        if (e.key === "ArrowLeft") prevCard(e);
+        if (e.key === "Escape") closeCard();
+    }
+  }
 </script>
 
 {#if $config.showEventDetails}
   <div class="hero bg-white py-20 text-wedding-dark font-sans">
-    <div class="hero-content flex-col w-full max-w-4xl">
+    <div class="hero-content flex-col w-full max-w-[90rem]">
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 w-full text-center"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 w-full text-center"
       >
-        <div class="flex flex-col items-center p-8 border border-wedding-beige">
+        <div class="flex flex-col items-center p-8 border border-wedding-beige h-full">
           <div class="mb-4 text-wedding-green">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +88,7 @@
           </p>
         </div>
 
-        <div class="flex flex-col items-center p-8 border border-wedding-beige">
+        <div class="flex flex-col items-center p-8 border border-wedding-beige h-full">
           <div class="mb-4 text-wedding-green">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +119,7 @@
           </a>
         </div>
 
-        <div class="flex flex-col items-center p-8 border border-wedding-beige">
+        <div class="flex flex-col items-center p-8 border border-wedding-beige h-full">
           <div class="mb-4 text-wedding-green">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +144,7 @@
           <h3 class="text-xl font-serif mb-2">
             {translations[$language].location}
           </h3>
-          <p class="text-lg">
+          <p class="text-lg truncate max-w-[200px]">
             {$config.weddingLocation}
           </p>
           <a
@@ -112,7 +155,7 @@
           </a>
         </div>
 
-        <div class="flex flex-col items-center p-8 border border-wedding-beige">
+        <div class="flex flex-col items-center p-8 border border-wedding-beige h-full">
           <div class="mb-4 text-wedding-green">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -132,14 +175,14 @@
           <h3 class="text-xl font-serif mb-2">
             {translations[$language].dress_code}
           </h3>
-          <div class="flex flex-wrap gap-3 justify-center mt-2">
+          <div class="grid grid-cols-6 lg:grid-cols-3 xl:grid-cols-6 gap-4 justify-items-center mt-2">
             {#if $config.dressCodeColors}
               {#each $config.dressCodeColors as color}
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-static-element-interactions -->
                 <div
-                  class="w-8 h-8 rounded-full border border-gray-200 shadow-sm cursor-pointer transition-transform hover:scale-110"
-                  style="background-color: {color};"
+                  class="w-8 h-8 rounded-full border shadow-sm cursor-pointer transition-transform hover:scale-110"
+                  style="background-color: {color}; border-color: {color};"
                   title={color}
                   on:click={() => (selectedColor = color)}
                 ></div>
@@ -147,6 +190,42 @@
             {/if}
           </div>
         </div>
+
+        {#if $config.showWeddingCard}
+        <div class="flex flex-col items-center p-8 border border-wedding-beige h-full">
+          <div class="mb-4 text-wedding-green">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-8 h-8"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+              />
+            </svg>
+          </div>
+          <h3 class="text-xl font-serif mb-2">
+            {translations[$language].wedding_card}
+          </h3>
+          <div class="text-center">
+             {#if $config.weddingCardImages && $config.weddingCardImages.length > 0}
+               <button
+                 class="text-sm opacity-60 uppercase tracking-widest mt-1 underline hover:text-wedding-green"
+                 on:click={() => openCard(0)}
+               >
+                 {translations[$language].view_wedding_card}
+               </button>
+             {:else}
+                <span class="text-sm opacity-60 italic">-</span>
+             {/if}
+           </div>
+        </div>
+        {/if}
       </div>
     </div>
   </div>
@@ -237,3 +316,95 @@
   {/if}
 
 {/if}
+
+{#if showCard && cardImages.length > 0}
+    {@const selectedImg = cardImages[currentCardIndex]}
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-90 p-4"
+        transition:fade
+    >
+        <button
+            class="absolute top-4 right-4 btn btn-circle btn-ghost text-white z-50"
+            on:click={closeCard}
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                />
+            </svg>
+        </button>
+
+        {#if cardImages.length > 1}
+            <!-- Prev Button -->
+            <button
+                class="absolute left-4 top-1/2 -translate-y-1/2 btn btn-circle btn-ghost text-white z-50 flex"
+                on:click={prevCard}
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 19l-7-7 7-7"
+                    />
+                </svg>
+            </button>
+
+            <!-- Next Button -->
+            <button
+                class="absolute right-4 top-1/2 -translate-y-1/2 btn btn-circle btn-ghost text-white z-50 flex"
+                on:click={nextCard}
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5l7 7-7 7"
+                    />
+                </svg>
+            </button>
+        {/if}
+
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+        <!-- svelte-ignore a11y-no-static-element-interactions -->
+        <div class="contents" on:click|stopPropagation>
+            <img
+                src={typeof selectedImg === "string"
+                    ? selectedImg
+                    : selectedImg.large}
+                alt="Wedding Card"
+                class="max-h-full max-w-full object-contain rounded-lg shadow-2xl"
+            />
+        </div>
+        
+        <div class="absolute bottom-4 left-0 right-0 text-center text-white/50 text-sm">
+            {currentCardIndex + 1} / {cardImages.length}
+        </div>
+    </div>
+{/if}
+
+<svelte:window on:keydown={handleKeydown} />

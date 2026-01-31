@@ -142,6 +142,14 @@
                     );
                 }
 
+                if (!data.weddingCardImages) {
+                    data.weddingCardImages = [];
+                }
+                
+                if (data.showWeddingCard === undefined) {
+                    data.showWeddingCard = true;
+                }
+
                 config.set(data as any);
                 originalConfig = JSON.stringify(data);
             }
@@ -662,6 +670,91 @@
 
             // Update config
             $config.galleryImages = $config.galleryImages.filter(
+                (item) => item !== img,
+            );
+            await saveConfig();
+
+            showToastNotification(translations[$language].delete_image_success);
+        } catch (e) {
+            console.error("Delete failed:", e);
+            modalMessage = translations[$language].delete_image_error;
+            modalType = "error";
+            showModal = true;
+        }
+    }
+
+    async function uploadWeddingCardImage(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (!input.files || input.files.length === 0) return;
+
+        const file = input.files[0];
+        const timestamp = Date.now();
+        const extension = file.name.split(".").pop();
+        const randomId = Math.random().toString(36).substring(2, 9);
+        const newFileName = `${timestamp}_${randomId}.${extension}`;
+
+        uploading = true;
+        try {
+            // Resize for thumbnail
+            const smallBlob = await resizeImage(file, 600);
+
+            const largeRef = ref(storage, `image/card/large_${newFileName}`);
+            const smallRef = ref(storage, `image/card/small_${newFileName}`);
+
+            // Upload both
+            const [largeSnapshot, smallSnapshot] = await Promise.all([
+                uploadBytes(largeRef, file),
+                uploadBytes(smallRef, smallBlob),
+            ]);
+
+            const largeUrl = await getDownloadURL(largeSnapshot.ref);
+            const smallUrl = await getDownloadURL(smallSnapshot.ref);
+
+            if (!$config.weddingCardImages) $config.weddingCardImages = [];
+            $config.weddingCardImages = [
+                ...$config.weddingCardImages,
+                { small: smallUrl, large: largeUrl },
+            ];
+
+            await saveConfig();
+            showToastNotification(translations[$language].upload_success);
+            input.value = ""; // Reset input
+        } catch (e) {
+            console.error("Upload failed:", e);
+            modalMessage = translations[$language].upload_error;
+            modalType = "error";
+            showModal = true;
+        } finally {
+            uploading = false;
+        }
+    }
+
+    async function deleteWeddingCardImage(img: string | { small: string; large: string }) {
+        if (!confirm(translations[$language].delete_image_confirm)) return;
+
+        try {
+            if (typeof img === "string") {
+                const imageRef = ref(storage, img);
+                try {
+                    await deleteObject(imageRef);
+                } catch (e: any) {
+                    if (e.code !== "storage/object-not-found") throw e;
+                }
+            } else {
+                const smallRef = ref(storage, img.small);
+                const largeRef = ref(storage, img.large);
+                await Promise.all([
+                    deleteObject(smallRef).catch((e) => {
+                        if (e.code !== "storage/object-not-found") throw e;
+                    }),
+                    deleteObject(largeRef).catch((e) => {
+                        if (e.code !== "storage/object-not-found") throw e;
+                    }),
+                ]);
+            }
+
+            // Update config
+            $config.weddingCardImages = $config.weddingCardImages.filter(
                 (item) => item !== img,
             );
             await saveConfig();
@@ -1330,6 +1423,22 @@
                         </div>
                     </div>
 
+                    <div class="divider">
+                        {translations[$language].wedding_card}
+                    </div>
+                    <div class="card bg-base-100 border">
+                        <div class="card-body p-4">
+                            <div class="flex items-center justify-between p-2 bg-base-200 rounded">
+                                <span class="font-medium">{translations[$language].show_wedding_card}</span>
+                                <input
+                                    type="checkbox"
+                                    class="toggle toggle-primary"
+                                    bind:checked={$config.showWeddingCard}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card-actions justify-end mt-4">
                         <button class="btn btn-primary" on:click={saveConfig}
                             >{translations[$language].save_changes}</button
@@ -1568,7 +1677,7 @@
                 {/each}
             </div>
         {:else if activeTab === "gallery"}
-            <div class="card bg-base-100 shadow-xl">
+            <div class="card bg-base-100 shadow-xl mb-4">
                 <div class="card-body">
                     <h2 class="card-title">
                         {translations[$language].gallery_management}
@@ -1613,6 +1722,73 @@
                                     <button
                                         class="btn btn-circle btn-error btn-sm absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                                         on:click={() => deleteImage(img)}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="h-4 w-4"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                            ><path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"
+                                            /></svg
+                                        >
+                                    </button>
+                                </div>
+                            {/each}
+                        {/if}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        {translations[$language].wedding_card_management}
+                    </h2>
+
+                    <div class="form-control w-full max-w-xs">
+                        <label class="label" for="card-upload">
+                            <span class="label-text"
+                                >{translations[$language].upload_image}</span
+                            >
+                        </label>
+                        <input
+                            type="file"
+                            id="card-upload"
+                            class="file-input file-input-bordered w-full max-w-xs"
+                            accept="image/*"
+                            on:change={uploadWeddingCardImage}
+                            disabled={uploading}
+                        />
+                         {#if uploading}
+                            <div class="text-sm text-info mt-2">
+                                {translations[$language].uploading}
+                            </div>
+                        {/if}
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div
+                        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                    >
+                        {#if $config.weddingCardImages}
+                            {#each $config.weddingCardImages as img}
+                                <div class="relative group aspect-square">
+                                    <img
+                                        src={typeof img === "string"
+                                            ? img
+                                            : img.small}
+                                        alt="Wedding Card"
+                                        class="w-full h-full object-cover rounded-lg shadow-md"
+                                    />
+                                    <button
+                                        class="btn btn-circle btn-error btn-sm absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        on:click={() => deleteWeddingCardImage(img)}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
